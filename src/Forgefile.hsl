@@ -1,0 +1,34 @@
+include ~/toolsets/gcc/gcc-app.hsl
+
+local var sources type list;
+local var additional_includes type list;
+local var compiler_flags type list;
+local var additional_libraries type list;
+local var library_flags type list;
+local var binary_name type string;
+local var dependency_chain type string;
+
+project CP-8 : toolset "gcc-c-app" : dependencies $dependency_chain : $sources,
+                                                                      $additional_includes,
+                                                                      $compiler_flags,
+                                                                      $additional_libraries,
+                                                                      $library_flags,
+                                                                      $binary_name;
+
+
+CP-8.prologue() {
+    $sources.ls(".*\\.c$");
+
+    $binary_name = "cp8";
+    if (hefesto.sys.os_name() == "windows") {
+        $binary_name = $binary_name + ".exe";
+    }
+}
+
+CP-8.epilogue() {
+    if (hefesto.sys.last_forge_result() == 0) {
+        hefesto.sys.echo("=== BUILT!\n");
+    } else {
+        hefesto.sys.echo("~~~ NOT BUILT...\n");
+    }
+}
