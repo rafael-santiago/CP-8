@@ -30,7 +30,22 @@ CP-8.prologue() {
 CP-8.epilogue() {
     if (hefesto.sys.last_forge_result() == 0) {
         hefesto.sys.echo("=== BUILT!\n");
+        forge_tests();
     } else {
         hefesto.sys.echo("~~~ NOT BUILT...\n");
+    }
+}
+
+local function forge_tests() : result type none {
+    var oldcwd type string;
+    $oldcwd = hefesto.sys.pwd();
+
+    if (hefesto.sys.cd("tst")) {
+        hefesto.sys.forge("CP8-tests", "Forgefile.hsl", "--obj-output-dir=obj --bin-output-dir=bin");
+        hefesto.sys.cd($oldcwd);
+    }
+
+    if (hefesto.sys.last_forge_result() != 0) {
+        hefesto.project.abort(1);
     }
 }

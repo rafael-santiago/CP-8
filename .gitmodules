@@ -1,0 +1,3 @@
+[submodule "src/tst/lib"]
+	path = src/tst/lib
+	url = https://github.com/rafael-santiago/cutest

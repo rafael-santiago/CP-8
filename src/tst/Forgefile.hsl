@@ -1,0 +1,71 @@
+include ~/toolsets/gcc/gcc-app.hsl
+include ~/fsutil.hsl
+
+local var sources type list;
+local var includes type list;
+local var cflags type list;
+local var libraries type list;
+local var ldflags type list;
+local var appname type string;
+
+project CP8-tests : toolset "gcc-c-app" : $sources, $includes, $cflags, $libraries, $ldflags, $appname;
+
+CP8-tests.prologue() {
+    $sources.ls(".*\\.c$");
+    $includes.add_item("../");
+    $includes.add_item("lib/src");
+    if (isdir("/usr/local/include")) {
+        $includes.add_item("/usr/local/include");
+    }
+
+    $libraries.add_item("lib/src/lib");
+    if (isdir("/usr/local/lib")) {
+        $libraries.add_item("/usr/local/lib");
+    }
+
+    $ldflags.add_item("-lcutest");
+    if (hefesto.sys.os_name() == "linux") {
+        $ldflags.add_item("-ldl");
+        $ldflags.add_item("-lpthread");
+    } else if (hefesto.sys.os_name() == "freebsd") {
+        $ldflags.add_item("-lexecinfo");
+        $ldflags.add_item("-lpthread");
+    }
+
+    forge_cutest();
+
+    $appname = "tests";
+    if (hefesto.sys.os_name() == "windows") {
+        $appname = $appname + ".exe";
+    }
+}
+
+CP8-tests.epilogue() {
+    if (hefesto.sys.last_forge_result() == 0) {
+        runtests();
+    }
+}
+
+local function forge_cutest() : result type none {
+    var oldcwd type string;
+
+    $oldcwd = hefesto.sys.pwd();
+
+    if (hefesto.sys.cd("lib/src/")) {
+        hefesto.sys.forge("cutest", "Forgefile.hsl", "--obj-output-dir=obj --bin-output-dir=lib");
+        hefesto.sys.cd($oldcwd);
+    }
+
+    if (hefesto.sys.last_forge_result() != 0) {
+        hefesto.project.abort(1);
+    }
+}
+
+local function runtests() : result type none {
+    var exit_code type int;
+    $exit_code = hefesto.sys.run(hefesto.sys.make_path("bin", $appname));
+    if ($exit_code != 0) {
+        hefesto.sys.echo("~~~ THE TESTS HAS ERROR(s)\n");
+        hefesto.project.abort($exit_code);
+    }
+}
