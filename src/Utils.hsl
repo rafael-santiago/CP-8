@@ -1,0 +1,30 @@
+include ~/toolsets/common/utils/lang/c/dependency_scanner.hsl
+
+function get_codes(srcs type list, deps type string) : result type list {
+    var oldcwd type string;
+    $oldcwd = hefesto.sys.pwd();
+
+    $srcs.ls(".*\\.c$");
+
+    $deps = $deps + get_c_cpp_deps();
+
+    var modules type list;
+
+    $modules = hefesto.sys.get_option("modules");
+
+    while ($modules.count() > 0) {
+        var subdir type string;
+        $subdir = hefesto.sys.make_path($oldcwd, $modules.item(0));
+        if (hefesto.sys.cd($subdir)) {
+            $srcs.ls(".*\\.c$");
+            $deps = $deps + get_c_cpp_deps();
+        }
+        $modules.del_index(0);
+    }
+
+    hefesto.sys.cd($oldcwd);
+
+    hefesto.sys.byref($deps);
+
+    result $srcs;
+}
