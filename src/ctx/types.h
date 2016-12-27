@@ -9,23 +9,27 @@
 
 #define cp8_stack_floor(cp8) ( ( &(cp8)->stack[0] ) )
 
+#define cp8_stack_top(cp8) ( *(cp8)->sp )
+
 #define CP8_MEMORY_SZ 4096
 
 struct cp8_ctx {
     unsigned char v[8];
     unsigned char dt, st, i;
-    unsigned short *pc;
+    unsigned short pc;
     unsigned short *sp;
     unsigned short stack[CP8_STACK_SZ];
 };
+
+#define cp8_vreg(r, cp8) ( cp8->v[(r)] )
 
 #define cp8_asm_var(var, innn) ( cp8_ ## var (innn) )
 
 // INFO(Rafael): Variables mnemonics used on assembly instructions.
 
-#define cp8_vx(nnn) ( ((nnn) >> 8) )  //  WARN(Rafael): Taking in consideration that 'nnn' was acquired using the designed macro for.
+#define cp8_x(nnn) ( ((nnn) >> 8) )  //  WARN(Rafael): Taking in consideration that 'nnn' was acquired using the designed macro for.
 
-#define cp8_vy(nnn) ( ( ((nnn) >> 4) & 0xf ) )
+#define cp8_y(nnn) ( ( ((nnn) >> 4) & 0xf ) )
 
 #define cp8_nnn(i)  ( ( (i) & 0x0fff ) )
 

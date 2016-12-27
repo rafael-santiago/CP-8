@@ -1,4 +1,8 @@
 #include <cpu/itp/itp4.h>
 
 void itp4_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
+    // INFO(Rafael): SNE Vx, byte
+    if (cp8_vreg(cp8_asm_var(x, nnn), cp8) != cp8_asm_var(kk, nnn)) {
+        cp8->pc += 2;
+    }
 }

@@ -10,16 +10,24 @@ void cp8_push(struct cp8_ctx *cp8, unsigned short nnn) {
     } else {
         cp8->sp = cp8->sp + sizeof(cp8->stack[0]);
     }
+
+    *cp8->sp = nnn;
 }
 
-void cp8_pop(struct cp8_ctx *cp8) {
+unsigned short cp8_pop(struct cp8_ctx *cp8) {
+    unsigned short value = 0;
+
     if (cp8 == NULL || cp8->sp == NULL) {
-        return;
+        return 0;
     }
+
+    value = cp8_stack_top(cp8);
 
     if (cp8->sp == cp8_stack_floor(cp8)) {
         cp8->sp = NULL;
     } else {
         cp8->sp = cp8->sp - sizeof(cp8->stack[0]);
     }
+
+    return value;
 }

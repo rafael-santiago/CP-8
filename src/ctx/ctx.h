@@ -5,6 +5,6 @@
 
 void cp8_push(struct cp8_ctx *cp8, unsigned short nnn);
 
-void cp8_pop(struct cp8_ctx *cp8);
+unsigned short cp8_pop(struct cp8_ctx *cp8);
 
 #endif
