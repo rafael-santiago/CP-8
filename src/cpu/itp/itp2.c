@@ -1,4 +1,4 @@
 #include <cpu/itp/itp2.h>
 
-void itp2_gate(const unsigned short nnn) {
+void itp2_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
 }

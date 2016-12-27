@@ -20,7 +20,7 @@
 #include <cpu/itp/itpf.h>
 
 struct cp8_ins_gate_ctx {
-    void (*itrap)(const unsigned short nnn);
+    void (*itrap)(const unsigned short nnn, struct cp8_ctx *cp8);
 };
 
 #define set_cp8_itrap(x) ( itp ## x ## _gate )
@@ -36,6 +36,6 @@ struct cp8_ins_gate_ctx g_cp8_cpu_ins_gate[] = {
 
 // INFO(Rafael): Let's avoid a useless call overhead.
 
-#define cp8_cpu_exec(i) ( g_cp8_cpu_ins_gate[((i) >> 12)].itrap( cp8_asm_var(nnn, i) ) )
+#define cp8_cpu_exec(i, c) ( g_cp8_cpu_ins_gate[((i) >> 12)].itrap( cp8_asm_var(nnn, i), c) )
 
 #endif
