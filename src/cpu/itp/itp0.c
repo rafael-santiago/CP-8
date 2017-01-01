@@ -1,3 +1,11 @@
+/*
+ *                          Copyright (C) 2016, 2017 by Rafael Santiago
+ *
+ * This is a free software. You can redistribute it and/or modify under
+ * the terms of the GNU General Public License version 2.
+ *
+ */
+
 #include <cpu/itp/itp0.h>
 #include <ctx/ctx.h>
 #include <vid/vid.h>
