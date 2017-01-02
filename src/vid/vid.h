@@ -10,5 +10,6 @@
 #define CP8_VID_VID_H 1
 
 void cp8_vidcls(void);
+int cp8_viddrw(const unsigned char x, const unsigned char y, const char unsigned n);
 
 #endif

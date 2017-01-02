@@ -9,4 +9,6 @@
 #include <cpu/itp/itpb.h>
 
 void itpb_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
+    // INFO(Rafael): JP V0, addr
+    cp8->pc = nnn + cp8->v[0];
 }

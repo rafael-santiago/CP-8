@@ -6,9 +6,12 @@
  *
  */
 
-#include <cpu/itp/itp7.h>
+#include <kbd/kbd.h>
 
-void itp7_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
-    // INFO(Rafael): ADD Vx, byte
-    cp8_vreg(cp8_asm_var(x, nnn), cp8) += cp8_asm_var(kk, nnn);
+int cp8_kbdhit(void) {
+    return 0;
+}
+
+unsigned char cp8_kbdwait(void) {
+    return 0;
 }

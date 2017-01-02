@@ -9,4 +9,6 @@
 #include <cpu/itp/itp6.h>
 
 void itp6_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
+    // INFO(Rafael): LD Vx, byte
+    cp8_vreg(cp8_asm_var(x, nnn), cp8) = cp8_asm_var(kk, nnn);
 }

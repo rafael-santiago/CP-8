@@ -10,3 +10,7 @@
 
 void cp8_vidcls(void) {
 }
+
+int cp8_viddrw(const unsigned char x, const unsigned char y, const char unsigned n) {
+    return 0;
+}
