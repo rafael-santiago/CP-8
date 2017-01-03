@@ -6,15 +6,15 @@
  *
  */
 
-#include <mem/memory.h>
+#include <mem/mem.h>
 #include <ctx/types.h>
 
 unsigned char g_cp8_mmap[CP8_MEMORY_SZ];
 
-void set_maddr(unsigned short addr, unsigned char value) {
+void cp8_memset(unsigned short addr, unsigned char value) {
     g_cp8_mmap[addr] = value;
 }
 
-unsigned short get_maddr(unsigned short addr) {
+unsigned char cp8_memget(unsigned short addr) {
     return g_cp8_mmap[addr];
 }

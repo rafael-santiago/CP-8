@@ -6,11 +6,11 @@
  *
  */
 
-#ifndef CP8_MEM_MEMORY_H
-#define CP8_MEM_MEMORY_H 1
+#ifndef CP8_MEM_MEM_H
+#define CP8_MEM_MEM_H 1
 
-void set_maddr(unsigned short addr, unsigned char value);
+void cp8_memset(unsigned short addr, unsigned char value);
 
-unsigned short get_maddr(unsigned short addr);
+unsigned char cp8_memget(unsigned short addr);
 
 #endif
