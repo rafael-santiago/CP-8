@@ -36,3 +36,17 @@ function get_codes(srcs type list, deps type string) : result type list {
 
     result $srcs;
 }
+
+function ivk(project_name type string, location type string, forgefile type string, options type string) : result type none {
+    var oldcwd type string;
+    $oldcwd = hefesto.sys.pwd();
+
+    if (hefesto.sys.cd($location)) {
+        hefesto.sys.forge($project_name, $forgefile, $options);
+        hefesto.sys.cd($oldcwd);
+    }
+
+    if (hefesto.sys.last_forge_result() != 0) {
+        hefesto.project.abort(1);
+    }
+}

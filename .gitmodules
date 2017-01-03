@@ -1,3 +1,6 @@
 [submodule "src/tst/lib"]
 	path = src/tst/lib
 	url = https://github.com/rafael-santiago/cutest
+[submodule "src/lib/acc"]
+	path = src/lib/acc
+	url = https://github.com/rafael-santiago/accacia

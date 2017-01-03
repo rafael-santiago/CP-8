@@ -17,6 +17,8 @@ local var library_flags type list;
 local var binary_name type string;
 local var dependency_chain type string;
 
+local var g_additional_libs type list;
+
 project CP-8 : toolset "gcc-c-app" : dependencies $dependency_chain : $sources,
                                                                       $additional_includes,
                                                                       $compiler_flags,
@@ -28,32 +30,58 @@ project CP-8 : toolset "gcc-c-app" : dependencies $dependency_chain : $sources,
 CP-8.prologue() {
     $sources = get_codes($sources, $dependency_chain);
     $additional_includes.add_item(hefesto.sys.pwd());
+    $additional_includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "lib/acc/src"));
 
     $binary_name = "cp8";
     if (hefesto.sys.os_name() == "windows") {
         $binary_name = $binary_name + ".exe";
     }
+
+    $additional_libraries.add_item("lib/acc/lib");
+    $library_flags.add_item("-laccacia");
+
+    # INFO(Rafael): Let's register all additional libraries that need an "on-the-fly build".
+    #               E.g.: git-submodules.
+
+    $g_additional_libs.add_item("accacia");
+
+    forge_additional_libs();
 }
 
 CP-8.epilogue() {
     if (hefesto.sys.last_forge_result() == 0) {
-        hefesto.sys.echo("=== BUILT!\n");
+        hefesto.sys.echo("\n=== BUILT!\n\n");
         forge_tests();
     } else {
-        hefesto.sys.echo("~~~ NOT BUILT...\n");
+        hefesto.sys.echo("\n~~~ NOT BUILT...\n");
     }
 }
 
 local function forge_tests() : result type none {
-    var oldcwd type string;
-    $oldcwd = hefesto.sys.pwd();
-
-    if (hefesto.sys.cd("tst")) {
-        hefesto.sys.forge("CP8-tests", "Forgefile.hsl", "--obj-output-dir=obj --bin-output-dir=bin");
-        hefesto.sys.cd($oldcwd);
-    }
-
-    if (hefesto.sys.last_forge_result() != 0) {
-        hefesto.project.abort(1);
-    }
+    ivk("CP8-tests", "tst", "Forgefile.hsl", "--obj-output-dir=obj --bin-output-dir=bin");
 }
+
+local function forge_additional_libs() : result type none {
+    var a type int;
+    var libforge type int;
+
+    hefesto.sys.echo("=== INFO: Now building all additional libraries...\n\n");
+
+    $a = 0;
+    while ($a < $g_additional_libs.count()) {
+        $libforge = hefesto.sys.get_func_addr("forge_" + $g_additional_libs.item($a));
+        if ($libforge == 0) {
+            hefesto.sys.echo("~~~ ERROR: Unable to forge lib \"" + $g_additional_libs.item($a) + "\".\n");
+            hefesto.project.abort(1);
+        }
+        hefesto.sys.call_func_addr($libforge);
+        $a = $a + 1;
+    }
+
+    hefesto.sys.echo("\n=== INFO: All additional libraries were built.\n\n");
+}
+
+local function forge_accacia() : result type none {
+    ivk("accacia", "lib/acc/src", "Forgefile.hsl", "--link-model=static --compile-model=release --bin-output-dir=../lib --obj-output-dir=obj/");
+}
+
