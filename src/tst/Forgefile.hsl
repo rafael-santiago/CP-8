@@ -73,7 +73,7 @@ local function runtests() : result type none {
     var exit_code type int;
     $exit_code = hefesto.sys.run(hefesto.sys.make_path("bin", $appname));
     if ($exit_code != 0) {
-        hefesto.sys.echo("~~~ THE TESTS HAS ERROR(s)\n");
+        hefesto.sys.echo("~~~ THE TESTS HAVE ERROR(s)\n");
         hefesto.project.abort($exit_code);
     }
 }
