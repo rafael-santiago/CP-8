@@ -8,6 +8,7 @@
 
 include ~/toolsets/gcc/gcc-app.hsl
 include ~/fsutil.hsl
+include ../Utils.hsl
 
 local var sources type list;
 local var includes type list;
@@ -55,18 +56,7 @@ CP8-tests.epilogue() {
 }
 
 local function forge_cutest() : result type none {
-    var oldcwd type string;
-
-    $oldcwd = hefesto.sys.pwd();
-
-    if (hefesto.sys.cd("lib/src/")) {
-        hefesto.sys.forge("cutest", "Forgefile.hsl", "--obj-output-dir=obj --bin-output-dir=lib");
-        hefesto.sys.cd($oldcwd);
-    }
-
-    if (hefesto.sys.last_forge_result() != 0) {
-        hefesto.project.abort(1);
-    }
+    ivk("cutest", "lib/src/", "Forgefile.hsl", "--obj-output-dir=obj --bin-output-dir=lib");
 }
 
 local function runtests() : result type none {
