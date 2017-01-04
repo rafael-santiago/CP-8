@@ -11,7 +11,7 @@
 #include <mem/mem.h>
 
 void itpf_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
-    unsigned char x;
+    unsigned char x, y;
 
     switch (nnn & 0xff) {
         case 0x07:
@@ -45,7 +45,16 @@ void itpf_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
             break;
 
         case 0x33:
-            // TODO(Rafael): LD B, Vx
+            // INFO(Rafael): LD B, Vx
+            // WARN(Rafael): Pretty slow, maybe it could be improved. Anyway, by now, this is what we get.
+            x = cp8_vreg(cp8_asm_var(x, nnn), cp8);
+            y = x / 100;
+            cp8_memset(cp8->i, y);
+            x = x - (y * 100);
+            y = x / 10;
+            cp8_memset(cp8->i + 1, y);
+            y = x - (y * 10);
+            cp8_memset(cp8->i + 2, y);
             break;
 
         case 0x55:
