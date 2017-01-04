@@ -21,6 +21,8 @@
 
 #define CP8_MEMORY_SZ 4096
 
+#define CP8_TEXT_START 0x200 // INFO(Rafael): No support for ETI 660 computers' ROMs.
+
 struct cp8_ctx {
     unsigned char v[8];
     unsigned char dt, st, i;
