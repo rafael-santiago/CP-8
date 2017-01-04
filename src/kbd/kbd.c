@@ -7,11 +7,12 @@
  */
 
 #include <kbd/kbd.h>
+#include <accacia.h>
 
 int cp8_kbdhit(void) {
-    return 0;
+    return accacia_kbhit();
 }
 
 unsigned char cp8_kbdwait(void) {
-    return 0;
+    return accacia_getch();
 }
