@@ -13,4 +13,6 @@ int cp8_kbdhit(void);
 
 unsigned char cp8_kbdwait(void);
 
+void cp8_kbdinit(void);
+
 #endif

@@ -6,10 +6,12 @@
  *
  */
 #include <vid/vid.h>
+#include <kbd/kbd.h>
 #include <accacia.h>
 
 int main(int argc, char **argv) {
     cp8_vidinit();
+    cp8_kbdinit();
     accacia_getch();
     cp8_vidfini();
     return 0;

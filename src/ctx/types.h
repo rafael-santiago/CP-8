@@ -51,4 +51,10 @@ struct cp8_ctx {
 
 #define cp8_n(nnn) ( ( (nnn) & 0xf ) )
 
+#define CP8_BLITCHAR_MH 11
+
+#define CP8_BLITCHAR_MW  7
+
+typedef unsigned char cp8_blitchar_pxmap_t[CP8_BLITCHAR_MH][CP8_BLITCHAR_MW];
+
 #endif

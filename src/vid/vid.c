@@ -12,13 +12,13 @@
 #include <stdio.h>
 #include <string.h>
 
-#define CP8_VID_MONITOR_W 65
+#define CP8_VID_MONITOR_W ( CP8_VIDMEM_MX + 1 )
 
-#define CP8_VID_MONITOR_H 33
+#define CP8_VID_MONITOR_H ( CP8_VIDMEM_MY + 1 )
 
 #define CP8_VID_MONITOR_X 1
 
-#define CP8_VID_MONITOR_Y 1
+#define CP8_VID_MONITOR_Y 8
 
 #define cp8_monitor_x(x) ( ( (x) % CP8_VIDMEM_MX )  + CP8_VID_MONITOR_X + 1 )
 
@@ -78,6 +78,35 @@ void cp8_vidset_tcolor(const int color) {
 
 void cp8_vidset_bcolor(const int color) {
     g_cp8_vid_bcolor = color;
+}
+
+void cp8_vidblitchar(const int x, const int y, const cp8_blitchar_pxmap_t pxmap, const int tcolor, const int bcolor) {
+    int cw, ch;
+
+    if (pxmap == NULL) {
+        return;
+    }
+
+    for (ch = 0; ch < CP8_BLITCHAR_MH; ch++) {
+        for (cw = 0; cw < CP8_BLITCHAR_MW; cw++) {
+            if ((pxmap[ch][cw] >> 4) == 0xf) {
+                accacia_textbackground(tcolor);
+            } else {
+                accacia_textbackground(bcolor);
+            }
+
+            accacia_gotoxy(x + cw, y + ch); printf(" ");
+
+            if ((pxmap[ch][cw] & 0xf) == 0xf) {
+                accacia_textbackground(tcolor);
+            } else {
+                accacia_textbackground(bcolor);
+            }
+
+            accacia_gotoxy(x + cw + 1, y + ch); printf(" ");
+            accacia_screennormalize();
+        }
+    }
 }
 
 #undef cp8_vid_monitor_x
