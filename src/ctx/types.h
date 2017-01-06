@@ -13,7 +13,7 @@
 
 #define CP8_STACK_SZ 0x10
 
-#define cp8_stack_ceil(cp8) ( ( &(cp8)->stack[CP8_STACK_SZ] ) )
+#define cp8_stack_ceil(cp8) ( ( &(cp8)->stack[CP8_STACK_SZ - 1] ) )
 
 #define cp8_stack_floor(cp8) ( ( &(cp8)->stack[0] ) )
 

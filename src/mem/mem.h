@@ -13,4 +13,6 @@ void cp8_memset(unsigned short addr, unsigned char value);
 
 unsigned char cp8_memget(unsigned short addr);
 
+void cp8_memzero(void);
+
 #endif

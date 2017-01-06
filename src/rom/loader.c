@@ -49,6 +49,14 @@ int cp8_romld(const char *filepath, char *msg) {
     }
 
     romdata = (unsigned char *) malloc(romdata_sz + 1);
+    if (romdata == NULL) {
+        if (msg != NULL) {
+            sprintf(msg, "ERROR: no memory.\n");
+        }
+        ok = 0;
+        goto ___cp8_romld_epilogue;
+    }
+
     if (fread(romdata, 1, romdata_sz, rom) != romdata_sz) {
         if (msg != NULL) {
             sprintf(msg, "ERROR: unable to load \"%s\" due to an unexpected read error.\n", filepath);
