@@ -23,6 +23,10 @@
 
 #define CP8_TEXT_START 0x200 // INFO(Rafael): No support for ETI 660 computers' ROMs.
 
+#define CP8_VIDMEM_MX 64
+
+#define CP8_VIDMEM_MY 32
+
 struct cp8_ctx {
     unsigned char v[8];
     unsigned char dt, st, i;

@@ -5,7 +5,12 @@
  * the terms of the GNU General Public License version 2.
  *
  */
+#include <vid/vid.h>
+#include <accacia.h>
 
 int main(int argc, char **argv) {
+    cp8_vidinit();
+    accacia_getch();
+    cp8_vidfini();
     return 0;
 }
