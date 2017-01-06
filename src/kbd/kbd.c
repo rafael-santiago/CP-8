@@ -9,10 +9,15 @@
 #include <kbd/kbd.h>
 #include <vid/vid.h>
 #include <accacia.h>
+#include <ctype.h>
 
 static int g_kbd_tcolor = AC_BCOLOR_WHITE;
 
 static int g_kbd_bcolor = AC_BCOLOR_BLACK;
+
+static int g_kbd_pcolor = AC_BCOLOR_CYAN;
+
+static int g_kbd_lkey = 0;
 
 #define CP8_KBD_X 67
 
@@ -248,6 +253,10 @@ static cp8_blitchar_pxmap_t g_kbd_kf = {
     { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff }
 };
 
+static void cp8_kbdkdraw(const unsigned char k, const int kcolor);
+
+static void cp8_kbdkpress(const unsigned char k);
+
 struct cp8_kbd_key_ctx {
     cp8_blitchar_pxmap_t *key;
     const int x, y;
@@ -261,30 +270,104 @@ unsigned char cp8_kbdwait(void) {
     return accacia_getch();
 }
 
-void cp8_kbdinit(void) {
+static void cp8_kbdkdraw(const unsigned char k, const int kcolor) {
     // WARN(Rafael): Good luck with this awful look...
 
-    // CLUE(Rafael): Line 1
-    cp8_vidblitchar(CP8_KBD_X, CP8_KBD_Y, g_kbd_k1, g_kbd_tcolor, g_kbd_bcolor);
-    cp8_vidblitchar(CP8_KBD_X + CP8_BLITCHAR_MW + CP8_KBD_XPAD, CP8_KBD_Y, g_kbd_k2, g_kbd_tcolor, g_kbd_bcolor);
-    cp8_vidblitchar(CP8_KBD_X + (2 * (CP8_BLITCHAR_MW + CP8_KBD_XPAD)), CP8_KBD_Y, g_kbd_k3, g_kbd_tcolor, g_kbd_bcolor);
-    cp8_vidblitchar(CP8_KBD_X + (3 * (CP8_BLITCHAR_MW + CP8_KBD_XPAD)), CP8_KBD_Y, g_kbd_kc, g_kbd_tcolor, g_kbd_bcolor);
+    switch (tolower(k)) {
+        // CLUE(Rafael): Line 1
+        case '1':
+            cp8_vidblitchar(CP8_KBD_X, CP8_KBD_Y, g_kbd_k1, kcolor, g_kbd_bcolor);
+            break;
 
-    // CLUE(Rafael): Line 2
-    cp8_vidblitchar(CP8_KBD_X, CP8_KBD_Y + CP8_BLITCHAR_MH + CP8_KBD_YPAD, g_kbd_k4, g_kbd_tcolor, g_kbd_bcolor);
-    cp8_vidblitchar(CP8_KBD_X + CP8_BLITCHAR_MW + CP8_KBD_XPAD, CP8_KBD_Y + CP8_BLITCHAR_MH + CP8_KBD_YPAD, g_kbd_k5, g_kbd_tcolor, g_kbd_bcolor);
-    cp8_vidblitchar(CP8_KBD_X + (2 * (CP8_BLITCHAR_MW + CP8_KBD_XPAD)), CP8_KBD_Y + CP8_BLITCHAR_MH + CP8_KBD_YPAD, g_kbd_k6, g_kbd_tcolor, g_kbd_bcolor);
-    cp8_vidblitchar(CP8_KBD_X + (3 * (CP8_BLITCHAR_MW + CP8_KBD_XPAD)), CP8_KBD_Y + CP8_BLITCHAR_MH + CP8_KBD_YPAD, g_kbd_kd, g_kbd_tcolor, g_kbd_bcolor);
+        case '2':
+            cp8_vidblitchar(CP8_KBD_X + CP8_BLITCHAR_MW + CP8_KBD_XPAD, CP8_KBD_Y, g_kbd_k2, kcolor, g_kbd_bcolor);
+            break;
 
-    // CLUE(Rafael): Line 3
-    cp8_vidblitchar(CP8_KBD_X, CP8_KBD_Y + (2 * (CP8_BLITCHAR_MH + CP8_KBD_YPAD)), g_kbd_k7, g_kbd_tcolor, g_kbd_bcolor);
-    cp8_vidblitchar(CP8_KBD_X + CP8_BLITCHAR_MW + CP8_KBD_XPAD, CP8_KBD_Y + (2 * (CP8_BLITCHAR_MH + CP8_KBD_YPAD)), g_kbd_k8, g_kbd_tcolor, g_kbd_bcolor);
-    cp8_vidblitchar(CP8_KBD_X + (2 * (CP8_BLITCHAR_MW + CP8_KBD_XPAD)), CP8_KBD_Y + (2 * (CP8_BLITCHAR_MH + CP8_KBD_YPAD)), g_kbd_k9, g_kbd_tcolor, g_kbd_bcolor);
-    cp8_vidblitchar(CP8_KBD_X + (3 * (CP8_BLITCHAR_MW + CP8_KBD_XPAD)), CP8_KBD_Y + (2 * (CP8_BLITCHAR_MH + CP8_KBD_YPAD)), g_kbd_ke, g_kbd_tcolor, g_kbd_bcolor);
+        case '3':
+            cp8_vidblitchar(CP8_KBD_X + (2 * (CP8_BLITCHAR_MW + CP8_KBD_XPAD)), CP8_KBD_Y, g_kbd_k3, kcolor, g_kbd_bcolor);
+            break;
 
-    // CLUE(Rafael): Line 4
-    cp8_vidblitchar(CP8_KBD_X, CP8_KBD_Y + (3 * (CP8_BLITCHAR_MH + CP8_KBD_YPAD)), g_kbd_ka, g_kbd_tcolor, g_kbd_bcolor);
-    cp8_vidblitchar(CP8_KBD_X + CP8_BLITCHAR_MW + CP8_KBD_XPAD, CP8_KBD_Y + (3 * (CP8_BLITCHAR_MH + CP8_KBD_YPAD)), g_kbd_k0, g_kbd_tcolor, g_kbd_bcolor);
-    cp8_vidblitchar(CP8_KBD_X + (2 * (CP8_BLITCHAR_MW + CP8_KBD_XPAD)), CP8_KBD_Y + (3 * (CP8_BLITCHAR_MH + CP8_KBD_YPAD)), g_kbd_kb, g_kbd_tcolor, g_kbd_bcolor);
-    cp8_vidblitchar(CP8_KBD_X + (3 * (CP8_BLITCHAR_MW + CP8_KBD_XPAD)), CP8_KBD_Y + (3 * (CP8_BLITCHAR_MH + CP8_KBD_YPAD)), g_kbd_kf, g_kbd_tcolor, g_kbd_bcolor);
+        case 'c':
+            cp8_vidblitchar(CP8_KBD_X + (3 * (CP8_BLITCHAR_MW + CP8_KBD_XPAD)), CP8_KBD_Y, g_kbd_kc, kcolor, g_kbd_bcolor);
+            break;
+
+        // CLUE(Rafael): Line 2
+        case '4':
+            cp8_vidblitchar(CP8_KBD_X, CP8_KBD_Y + CP8_BLITCHAR_MH + CP8_KBD_YPAD, g_kbd_k4, kcolor, g_kbd_bcolor);
+            break;
+
+        case '5':
+            cp8_vidblitchar(CP8_KBD_X + CP8_BLITCHAR_MW + CP8_KBD_XPAD, CP8_KBD_Y + CP8_BLITCHAR_MH + CP8_KBD_YPAD, g_kbd_k5, kcolor, g_kbd_bcolor);
+            break;
+
+        case '6':
+            cp8_vidblitchar(CP8_KBD_X + (2 * (CP8_BLITCHAR_MW + CP8_KBD_XPAD)), CP8_KBD_Y + CP8_BLITCHAR_MH + CP8_KBD_YPAD, g_kbd_k6, kcolor, g_kbd_bcolor);
+            break;
+
+        case 'd':
+            cp8_vidblitchar(CP8_KBD_X + (3 * (CP8_BLITCHAR_MW + CP8_KBD_XPAD)), CP8_KBD_Y + CP8_BLITCHAR_MH + CP8_KBD_YPAD, g_kbd_kd, kcolor, g_kbd_bcolor);
+            break;
+
+        // CLUE(Rafael): Line 3
+        case '7':
+            cp8_vidblitchar(CP8_KBD_X, CP8_KBD_Y + (2 * (CP8_BLITCHAR_MH + CP8_KBD_YPAD)), g_kbd_k7, kcolor, g_kbd_bcolor);
+            break;
+
+        case '8':
+            cp8_vidblitchar(CP8_KBD_X + CP8_BLITCHAR_MW + CP8_KBD_XPAD, CP8_KBD_Y + (2 * (CP8_BLITCHAR_MH + CP8_KBD_YPAD)), g_kbd_k8, kcolor, g_kbd_bcolor);
+            break;
+
+        case '9':
+            cp8_vidblitchar(CP8_KBD_X + (2 * (CP8_BLITCHAR_MW + CP8_KBD_XPAD)), CP8_KBD_Y + (2 * (CP8_BLITCHAR_MH + CP8_KBD_YPAD)), g_kbd_k9, kcolor, g_kbd_bcolor);
+            break;
+
+        case 'e':
+            cp8_vidblitchar(CP8_KBD_X + (3 * (CP8_BLITCHAR_MW + CP8_KBD_XPAD)), CP8_KBD_Y + (2 * (CP8_BLITCHAR_MH + CP8_KBD_YPAD)), g_kbd_ke, kcolor, g_kbd_bcolor);
+            break;
+
+        // CLUE(Rafael): Line 4
+        case 'a':
+            cp8_vidblitchar(CP8_KBD_X, CP8_KBD_Y + (3 * (CP8_BLITCHAR_MH + CP8_KBD_YPAD)), g_kbd_ka, kcolor, g_kbd_bcolor);
+            break;
+
+        case '0':
+            cp8_vidblitchar(CP8_KBD_X + CP8_BLITCHAR_MW + CP8_KBD_XPAD, CP8_KBD_Y + (3 * (CP8_BLITCHAR_MH + CP8_KBD_YPAD)), g_kbd_k0, kcolor, g_kbd_bcolor);
+            break;
+
+        case 'b':
+            cp8_vidblitchar(CP8_KBD_X + (2 * (CP8_BLITCHAR_MW + CP8_KBD_XPAD)), CP8_KBD_Y + (3 * (CP8_BLITCHAR_MH + CP8_KBD_YPAD)), g_kbd_kb, kcolor, g_kbd_bcolor);
+            break;
+
+        case 'f':
+            cp8_vidblitchar(CP8_KBD_X + (3 * (CP8_BLITCHAR_MW + CP8_KBD_XPAD)), CP8_KBD_Y + (3 * (CP8_BLITCHAR_MH + CP8_KBD_YPAD)), g_kbd_kf, kcolor, g_kbd_bcolor);
+            break;
+
+    }
+
+    accacia_gotoxy(1, 1);
+}
+
+static void cp8_kbdkpress(const unsigned char k) {
+    cp8_kbdkdraw(g_kbd_lkey, g_kbd_tcolor);
+    cp8_kbdkdraw(k, g_kbd_pcolor);
+    g_kbd_lkey = k;
+}
+
+void cp8_kbdinit(void) {
+    cp8_kbdkdraw('1', g_kbd_tcolor);
+    cp8_kbdkdraw('2', g_kbd_tcolor);
+    cp8_kbdkdraw('3', g_kbd_tcolor);
+    cp8_kbdkdraw('c', g_kbd_tcolor);
+    cp8_kbdkdraw('4', g_kbd_tcolor);
+    cp8_kbdkdraw('5', g_kbd_tcolor);
+    cp8_kbdkdraw('6', g_kbd_tcolor);
+    cp8_kbdkdraw('d', g_kbd_tcolor);
+    cp8_kbdkdraw('7', g_kbd_tcolor);
+    cp8_kbdkdraw('8', g_kbd_tcolor);
+    cp8_kbdkdraw('9', g_kbd_tcolor);
+    cp8_kbdkdraw('e', g_kbd_tcolor);
+    cp8_kbdkdraw('a', g_kbd_tcolor);
+    cp8_kbdkdraw('0', g_kbd_tcolor);
+    cp8_kbdkdraw('b', g_kbd_tcolor);
+    cp8_kbdkdraw('f', g_kbd_tcolor);
 }
