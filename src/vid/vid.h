@@ -13,7 +13,7 @@
 
 void cp8_vidcls(void);
 
-int cp8_viddrw(const unsigned char x, const unsigned char y, const char unsigned n);
+int cp8_viddrw(const unsigned char x, const unsigned char y, const unsigned char *sprite, const char unsigned sn);
 
 int cp8_vidinit(void);
 

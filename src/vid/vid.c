@@ -32,6 +32,8 @@ static int g_cp8_vid_bcolor = AC_TCOLOR_BLACK;
 
 static unsigned char g_cp8_vidmem[CP8_VIDMEM_MX][CP8_VIDMEM_MY];
 
+static int cp8_vidplotpixel(const unsigned char x, const unsigned char y);
+
 void cp8_vidcls(void) {
     int x, y;
 
@@ -48,12 +50,33 @@ void cp8_vidcls(void) {
     accacia_screennormalize();
 }
 
-int cp8_viddrw(const unsigned char x, const unsigned char y, const char unsigned n) {
-    /*accacia_textbackground(g_cp8_vid_tcolor);
+int cp8_viddrw(const unsigned char x, const unsigned char y, const unsigned char *sprite, const char unsigned sn) {
+    unsigned char h, w;
+    unsigned char cx, cy;
+    int collide = 0;
+    cy = y;
+    for (h = 0; h < sn; h++) {
+        cx = x;
+        for (w = 0; w < 8; w++) {
+            if (cp8_vidplotpixel(cx, cy)) {
+                collide = 1;
+            }
+            cx++;
+        }
+        cy++;
+    }
+    return collide;
+}
+
+static int cp8_vidplotpixel(const unsigned char x, const unsigned char y) {
+    int abs_x = (x % CP8_VIDMEM_MX), abs_y = (y % CP8_VIDMEM_MY);
+    int collide = ((g_cp8_vidmem[abs_x][abs_y] ^ 1) == 0);
+    g_cp8_vidmem[abs_x][abs_y] = 1;
+    accacia_textbackground(g_cp8_vid_tcolor);
     accacia_gotoxy(cp8_monitor_x(x), cp8_monitor_y(y)); printf(" ");
     accacia_gotoxy(CP8_VID_MONITOR_X, CP8_VID_MONITOR_Y);
-    accacia_screennormalize();*/
-    return 0;
+    accacia_screennormalize();
+    return collide;
 }
 
 int cp8_vidinit(void) {
