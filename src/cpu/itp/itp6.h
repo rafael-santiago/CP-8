@@ -11,6 +11,6 @@
 
 #include <ctx/types.h>
 
-void itp6_gate(const unsigned short nnn, struct cp8_ctx *cp8);
+unsigned short itp6_gate(const unsigned short nnn, struct cp8_ctx *cp8);
 
 #endif

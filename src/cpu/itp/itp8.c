@@ -8,7 +8,7 @@
 
 #include <cpu/itp/itp8.h>
 
-void itp8_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
+unsigned short itp8_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
     switch (nnn & 0x1) {
         case 0x0:
             // INFO(Rafael): LD Vx, Vy
@@ -61,4 +61,6 @@ void itp8_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
             break;
 
     }
+
+    return (cp8->pc + 1);
 }

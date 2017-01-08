@@ -9,7 +9,7 @@
 #include <cpu/itp/itpe.h>
 #include <kbd/kbd.h>
 
-void itpe_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
+unsigned short itpe_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
     switch (nnn & 0xff) {
         case 0x9e:
             // INFO(Rafael): SKP Vx
@@ -25,4 +25,6 @@ void itpe_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
             }
             break;
     }
+
+    return cp8->pc;
 }

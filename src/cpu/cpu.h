@@ -28,7 +28,7 @@
 #include <cpu/itp/itpf.h>
 
 struct cp8_ins_gate_ctx {
-    void (*itrap)(const unsigned short nnn, struct cp8_ctx *cp8);
+    unsigned short (*itrap)(const unsigned short nnn, struct cp8_ctx *cp8);
 };
 
 #define set_cp8_itrap(x) ( itp ## x ## _gate )

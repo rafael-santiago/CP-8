@@ -10,7 +10,7 @@
 #include <mem/mem.h>
 #include <vid/vid.h>
 
-void itpd_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
+unsigned short itpd_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
     unsigned char sprite[255];
     int s, sn;
     sn = cp8_asm_var(n, nnn);
@@ -19,4 +19,6 @@ void itpd_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
     }
     // INFO(Rafael): DRW Vx, Vy, nibble
     cp8->v[0xf] = cp8_viddrw(cp8_asm_var(x, nnn), cp8_asm_var(y, nnn), sprite, sn);
+
+    return (cp8->pc + 1);
 }

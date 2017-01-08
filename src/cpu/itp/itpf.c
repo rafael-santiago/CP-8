@@ -10,7 +10,7 @@
 #include <kbd/kbd.h>
 #include <mem/mem.h>
 
-void itpf_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
+unsigned short itpf_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
     unsigned char x, y;
 
     switch (nnn & 0xff) {
@@ -71,4 +71,6 @@ void itpf_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
             }
             break;
     }
+
+    return (cp8->pc + 1);
 }

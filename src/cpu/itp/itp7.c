@@ -8,7 +8,9 @@
 
 #include <cpu/itp/itp7.h>
 
-void itp7_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
+unsigned short itp7_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
     // INFO(Rafael): ADD Vx, byte
     cp8_vreg(cp8_asm_var(x, nnn), cp8) += cp8_asm_var(kk, nnn);
+
+    return (cp8->pc + 1);
 }
