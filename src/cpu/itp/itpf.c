@@ -59,14 +59,14 @@ unsigned short itpf_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
 
         case 0x55:
             // INFO(Rafael): LD [I], Vx
-            for (x = 0; x < cp8_vreg(cp8_asm_var(x, nnn), cp8); x++) {
+            for (x = 0; x <= cp8_asm_var(x, nnn); x++) {
                 cp8_memset(cp8->i + x, cp8_vreg(x, cp8));
             }
             break;
 
         case 0x65:
             // INFO(Rafael): LD Vx, [I]
-            for (x = 0; x < cp8_vreg(cp8_asm_var(x, nnn), cp8); x++) {
+            for (x = 0; x <= cp8_asm_var(x, nnn); x++) {
                 cp8_vreg(x, cp8) = cp8_memget(cp8->i + x);
             }
             break;

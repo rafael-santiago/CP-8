@@ -31,7 +31,8 @@
 
 struct cp8_ctx {
     unsigned char v[CP8_REGISTER_NR];
-    unsigned char dt, st, i;
+    unsigned char dt, st;
+    unsigned short i;
     unsigned short pc;
     unsigned short *sp;
     unsigned short stack[CP8_STACK_SZ];

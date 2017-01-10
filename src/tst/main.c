@@ -370,6 +370,186 @@ CUTE_TEST_CASE(cp8_cpu_SHL_Vx_tests)
     CUTE_ASSERT(cp8.v[0xf] == 0);
 CUTE_TEST_CASE_END
 
+CUTE_TEST_CASE(cp8_cpu_SNE_Vx_Vy_tests)
+    struct cp8_ctx cp8;
+
+    cp8.pc = 0;
+    cp8.v[0x3] = 0xa8;
+    cp8.v[0x7] = 0xa8;
+    CUTE_ASSERT(cp8_cpu_exec(0x9370, &cp8) == 1);
+    cp8.v[0x7] = 0xa7;
+    CUTE_ASSERT(cp8_cpu_exec(0x9370, &cp8) == 2);
+CUTE_TEST_CASE_END
+
+CUTE_TEST_CASE(cp8_cpu_LD_I_addr_tests)
+    struct cp8_ctx cp8;
+
+    cp8.pc = 0;
+    cp8.i = 0;
+    CUTE_ASSERT(cp8_cpu_exec(0xab15, &cp8) == 1);
+    CUTE_ASSERT(cp8.i == 0xb15);
+CUTE_TEST_CASE_END
+
+CUTE_TEST_CASE(cp8_cpu_JP_V0_addr_tests)
+    struct cp8_ctx cp8;
+
+    cp8.pc = 0;
+    cp8.v[0] = 0xb1;
+    CUTE_ASSERT(cp8_cpu_exec(0xbabc, &cp8) == 0xb6d);
+    CUTE_ASSERT(cp8.pc == 0xb6d);
+CUTE_TEST_CASE_END
+
+CUTE_TEST_CASE(cp8_cpu_RND_Vx_byte_tests)
+    // WARN(Rafael): Kind of stupid but here we go.
+    struct cp8_ctx cp8;
+
+    cp8.pc = 0;
+    cp8.v[0] = 255;
+    CUTE_ASSERT(cp8_cpu_exec(0xc0ff, &cp8) == 1);
+CUTE_TEST_CASE_END
+
+CUTE_TEST_CASE(cp8_cpu_LD_Vx_DT_tests)
+    struct cp8_ctx cp8;
+
+    cp8.pc = 0;
+    cp8.dt = 0xf4;
+    cp8.v[0x6] = 0x0;
+    CUTE_ASSERT(cp8_cpu_exec(0xf607, &cp8) == 1);
+    CUTE_ASSERT(cp8.v[0x6] == 0xf4);
+CUTE_TEST_CASE_END
+
+CUTE_TEST_CASE(cp8_cpu_LD_DT_Vx_tests)
+    struct cp8_ctx cp8;
+
+    cp8.pc = 0;
+    cp8.dt = 0;
+    cp8.v[0x6] = 0xf4;
+    CUTE_ASSERT(cp8_cpu_exec(0xf615, &cp8) == 1);
+    CUTE_ASSERT(cp8.dt == 0xf4);
+CUTE_TEST_CASE_END
+
+CUTE_TEST_CASE(cp8_cpu_LD_ST_Vx_tests)
+    struct cp8_ctx cp8;
+
+    cp8.pc = 0;
+    cp8.st = 0;
+    cp8.v[0x5] = 0xbb;
+    CUTE_ASSERT(cp8_cpu_exec(0xf518, &cp8) == 1);
+    CUTE_ASSERT(cp8.st == 0xbb);
+CUTE_TEST_CASE_END
+
+CUTE_TEST_CASE(cp8_cpu_ADD_I_Vx_tests)
+    struct cp8_ctx cp8;
+
+    cp8.pc = 0;
+    cp8.v[0xc] = 1;
+    cp8.i = 6;
+    CUTE_ASSERT(cp8_cpu_exec(0xfc1e, &cp8) == 1);
+    CUTE_ASSERT(cp8.i == 7);
+CUTE_TEST_CASE_END
+
+CUTE_TEST_CASE(cp8_cpu_LD_F_Vx_tests)
+    struct cp8_ctx cp8;
+
+    cp8.pc = 0;
+    cp8.i = 0;
+    cp8.v[0x1] = 0x99;
+    CUTE_ASSERT(cp8_cpu_exec(0xf129, &cp8) == 1);
+    CUTE_ASSERT(cp8.i == 0x99);
+CUTE_TEST_CASE_END
+
+CUTE_TEST_CASE(cp8_cpu_LD_B_Vx_tests)
+    struct cp8_ctx cp8;
+
+    cp8.pc = 0;
+    cp8.i = 0x200;
+    cp8.v[0] = 0xfe;
+    CUTE_ASSERT(cp8_cpu_exec(0xf033, &cp8) == 1);
+    CUTE_ASSERT(cp8_memget(cp8.i) == 2);
+    CUTE_ASSERT(cp8_memget(cp8.i + 1) == 5);
+    CUTE_ASSERT(cp8_memget(cp8.i + 2) == 4);
+CUTE_TEST_CASE_END
+
+CUTE_TEST_CASE(cp8_cpu_LD_I_Vx_tests)
+    struct cp8_ctx cp8;
+
+    cp8.pc = 0;
+    cp8.i = 0x01a;
+    cp8.v[0x0] = 0x0;
+    cp8.v[0x1] = 0x1;
+    cp8.v[0x2] = 0x2;
+    cp8.v[0x3] = 0x3;
+    cp8.v[0x4] = 0x4;
+    cp8.v[0x5] = 0x5;
+    cp8.v[0x6] = 0x6;
+    cp8.v[0x7] = 0x7;
+    cp8.v[0x8] = 0x8;
+    cp8.v[0x9] = 0x9;
+    cp8.v[0xa] = 0xa;
+    cp8.v[0xb] = 0xb;
+    cp8.v[0xc] = 0xc;
+    cp8.v[0xd] = 0xd;
+    cp8.v[0xe] = 0xe;
+    cp8.v[0xf] = 0xf;
+    CUTE_ASSERT(cp8_cpu_exec(0xff55, &cp8) == 1);
+    CUTE_ASSERT(cp8_memget(cp8.i) == 0x0);
+    CUTE_ASSERT(cp8_memget(cp8.i + 0x1) == 0x1);
+    CUTE_ASSERT(cp8_memget(cp8.i + 0x2) == 0x2);
+    CUTE_ASSERT(cp8_memget(cp8.i + 0x3) == 0x3);
+    CUTE_ASSERT(cp8_memget(cp8.i + 0x4) == 0x4);
+    CUTE_ASSERT(cp8_memget(cp8.i + 0x5) == 0x5);
+    CUTE_ASSERT(cp8_memget(cp8.i + 0x6) == 0x6);
+    CUTE_ASSERT(cp8_memget(cp8.i + 0x7) == 0x7);
+    CUTE_ASSERT(cp8_memget(cp8.i + 0x8) == 0x8);
+    CUTE_ASSERT(cp8_memget(cp8.i + 0x9) == 0x9);
+    CUTE_ASSERT(cp8_memget(cp8.i + 0xa) == 0xa);
+    CUTE_ASSERT(cp8_memget(cp8.i + 0xb) == 0xb);
+    CUTE_ASSERT(cp8_memget(cp8.i + 0xc) == 0xc);
+    CUTE_ASSERT(cp8_memget(cp8.i + 0xd) == 0xd);
+    CUTE_ASSERT(cp8_memget(cp8.i + 0xe) == 0xe);
+    CUTE_ASSERT(cp8_memget(cp8.i + 0xf) == 0xf);
+CUTE_TEST_CASE_END
+
+CUTE_TEST_CASE(cp8_cpu_LD_Vx_I_tests)
+    struct cp8_ctx cp8;
+
+    cp8.pc = 0;
+    cp8.i = 0x100;
+    cp8_memset(cp8.i, 0xf);
+    cp8_memset(cp8.i + 0x1, 0xe);
+    cp8_memset(cp8.i + 0x2, 0xd);
+    cp8_memset(cp8.i + 0x3, 0xc);
+    cp8_memset(cp8.i + 0x4, 0xb);
+    cp8_memset(cp8.i + 0x5, 0xa);
+    cp8_memset(cp8.i + 0x6, 0x9);
+    cp8_memset(cp8.i + 0x7, 0x8);
+    cp8_memset(cp8.i + 0x8, 0x7);
+    cp8_memset(cp8.i + 0x9, 0x6);
+    cp8_memset(cp8.i + 0xa, 0x5);
+    cp8_memset(cp8.i + 0xb, 0x4);
+    cp8_memset(cp8.i + 0xc, 0x3);
+    cp8_memset(cp8.i + 0xd, 0x2);
+    cp8_memset(cp8.i + 0xe, 0x1);
+    cp8_memset(cp8.i + 0xf, 0x0);
+    CUTE_ASSERT(cp8_cpu_exec(0xff65, &cp8) == 1);
+    CUTE_ASSERT(cp8.v[0x0] == 0xf);
+    CUTE_ASSERT(cp8.v[0x1] == 0xe);
+    CUTE_ASSERT(cp8.v[0x2] == 0xd);
+    CUTE_ASSERT(cp8.v[0x3] == 0xc);
+    CUTE_ASSERT(cp8.v[0x4] == 0xb);
+    CUTE_ASSERT(cp8.v[0x5] == 0xa);
+    CUTE_ASSERT(cp8.v[0x6] == 0x9);
+    CUTE_ASSERT(cp8.v[0x7] == 0x8);
+    CUTE_ASSERT(cp8.v[0x8] == 0x7);
+    CUTE_ASSERT(cp8.v[0x9] == 0x6);
+    CUTE_ASSERT(cp8.v[0xa] == 0x5);
+    CUTE_ASSERT(cp8.v[0xb] == 0x4);
+    CUTE_ASSERT(cp8.v[0xc] == 0x3);
+    CUTE_ASSERT(cp8.v[0xd] == 0x2);
+    CUTE_ASSERT(cp8.v[0xe] == 0x1);
+    CUTE_ASSERT(cp8.v[0xf] == 0x0);
+CUTE_TEST_CASE_END
+
 CUTE_TEST_CASE_SUITE(cp8_cpu_suite)
     CUTE_RUN_TEST(cp8_cpu_CLS_tests);
     CUTE_RUN_TEST(cp8_cpu_RET_tests);
@@ -389,6 +569,18 @@ CUTE_TEST_CASE_SUITE(cp8_cpu_suite)
     CUTE_RUN_TEST(cp8_cpu_SHR_Vx_tests);
     CUTE_RUN_TEST(cp8_cpu_SUBN_Vx_Vy_tests);
     CUTE_RUN_TEST(cp8_cpu_SHL_Vx_tests);
+    CUTE_RUN_TEST(cp8_cpu_SNE_Vx_Vy_tests);
+    CUTE_RUN_TEST(cp8_cpu_LD_I_addr_tests);
+    CUTE_RUN_TEST(cp8_cpu_JP_V0_addr_tests);
+    CUTE_RUN_TEST(cp8_cpu_RND_Vx_byte_tests);
+    CUTE_RUN_TEST(cp8_cpu_LD_Vx_DT_tests);
+    CUTE_RUN_TEST(cp8_cpu_LD_DT_Vx_tests);
+    CUTE_RUN_TEST(cp8_cpu_LD_ST_Vx_tests);
+    CUTE_RUN_TEST(cp8_cpu_ADD_I_Vx_tests);
+    CUTE_RUN_TEST(cp8_cpu_LD_F_Vx_tests);
+    CUTE_RUN_TEST(cp8_cpu_LD_B_Vx_tests);
+    CUTE_RUN_TEST(cp8_cpu_LD_I_Vx_tests);
+    CUTE_RUN_TEST(cp8_cpu_LD_Vx_I_tests);
 CUTE_TEST_CASE_SUITE_END
 
 // --
