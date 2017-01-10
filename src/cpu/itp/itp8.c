@@ -9,7 +9,8 @@
 #include <cpu/itp/itp8.h>
 
 unsigned short itp8_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
-    switch (nnn & 0x1) {
+    unsigned short sum;
+    switch (nnn & 0xf) {
         case 0x0:
             // INFO(Rafael): LD Vx, Vy
             cp8_vreg(cp8_asm_var(x, nnn), cp8) = cp8_vreg(cp8_asm_var(y, nnn), cp8);
@@ -32,8 +33,9 @@ unsigned short itp8_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
 
         case 0x4:
             // INFO(Rafael): ADD Vx, Vy
-            cp8_vreg(cp8_asm_var(x, nnn), cp8) += cp8_vreg(cp8_asm_var(y, nnn), cp8);
-            cp8->v[0xf] = (cp8_vreg(cp8_asm_var(x, nnn), cp8) > 0xff);
+            sum = cp8_vreg(cp8_asm_var(x, nnn), cp8) + cp8_vreg(cp8_asm_var(y, nnn), cp8);
+            cp8->v[0xf] = (sum > 0xff);
+            cp8_vreg(cp8_asm_var(x, nnn), cp8) = (sum & 0xff);
             break;
 
         case 0x5:
@@ -45,7 +47,7 @@ unsigned short itp8_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
         case 0x6:
             // INFO(Rafael): SHR Vx {, Vy}
             cp8->v[0xf] = (cp8_vreg(cp8_asm_var(x, nnn), cp8) & 0x1);
-            cp8_vreg(cp8_asm_var(x, nnn), cp8) <<= 1;
+            cp8_vreg(cp8_asm_var(x, nnn), cp8) = cp8_vreg(cp8_asm_var(x, nnn), cp8) >> 1;
             break;
 
         case 0x7:
@@ -57,7 +59,7 @@ unsigned short itp8_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
         case 0xe:
             // INFO(Rafael): SHL Vx {, Vy}
             cp8->v[0xf] = (cp8_vreg(cp8_asm_var(x, nnn), cp8) >> 7);
-            cp8_vreg(cp8_asm_var(x, nnn), cp8) >>= 1;
+            cp8_vreg(cp8_asm_var(x, nnn), cp8) <<= 1;
             break;
 
     }

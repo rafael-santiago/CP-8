@@ -27,15 +27,17 @@
 
 #define CP8_VIDMEM_MY 32
 
+#define CP8_REGISTER_NR 0x10
+
 struct cp8_ctx {
-    unsigned char v[8];
+    unsigned char v[CP8_REGISTER_NR];
     unsigned char dt, st, i;
     unsigned short pc;
     unsigned short *sp;
     unsigned short stack[CP8_STACK_SZ];
 };
 
-#define cp8_vreg(r, cp8) ( cp8->v[(r)] )
+#define cp8_vreg(r, cp8) ( (cp8)->v[(r)] )
 
 #define cp8_asm_var(var, innn) ( cp8_ ## var (innn) )
 
