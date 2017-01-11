@@ -5,6 +5,7 @@
  * the terms of the GNU General Public License version 2.
  *
  */
+
 #include <vid/vid.h>
 #include <kbd/kbd.h>
 #include <accacia.h>

@@ -31,7 +31,7 @@ struct cp8_ins_gate_ctx {
     unsigned short (*itrap)(const unsigned short nnn, struct cp8_ctx *cp8);
 };
 
-#define set_cp8_itrap(x) ( itp ## x ## _gate )
+#define set_cp8_itrap(i) ( itp ## i ## _gate )
 
 struct cp8_ins_gate_ctx g_cp8_cpu_ins_gate[] = {
     set_cp8_itrap(0), set_cp8_itrap(1), set_cp8_itrap(2), set_cp8_itrap(3),

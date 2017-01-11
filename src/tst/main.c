@@ -11,8 +11,10 @@
 #include <ctx/ctx.h>
 #include <ctx/types.h>
 #include <cpu/cpu.h>
+#include <emu/opt.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 // MEM
 
@@ -92,13 +94,6 @@ CUTE_TEST_CASE_END
 
 CUTE_TEST_CASE_SUITE(cp8_ctx_suite)
     CUTE_RUN_TEST(cp8_stack_tests);
-CUTE_TEST_CASE_SUITE_END
-
-// --
-
-// OPT
-
-CUTE_TEST_CASE_SUITE(cp8_opt_suite)
 CUTE_TEST_CASE_SUITE_END
 
 // --
@@ -635,14 +630,40 @@ CUTE_TEST_CASE_END
 
 // --
 
+// EMU/OPT
+
+CUTE_TEST_CASE(cp8_emu_opt_tests)
+    char *argv[] = { "--processor=cp8",
+                     "--dummy-flag" };
+    int argc = 2;
+
+    CUTE_ASSERT(cp8_emu_option("processor", NULL) == NULL);
+    CUTE_ASSERT(cp8_emu_bool_option("dummy-flag", 0) == 0);
+
+    cp8_emu_set_argc_argv(argc, argv);
+
+    CUTE_ASSERT(strcmp(cp8_emu_option("processor", NULL), "cp8") == 0);
+    CUTE_ASSERT(cp8_emu_bool_option("dummy-flag", 0) == 1);
+    CUTE_ASSERT(cp8_emu_option("dummy-flag", NULL) == NULL);
+
+    CUTE_ASSERT(cp8_emu_option("foo", NULL) == NULL);
+    CUTE_ASSERT(cp8_emu_bool_option("bar", 1) == 1);
+CUTE_TEST_CASE_END
+
+CUTE_TEST_CASE_SUITE(cp8_emu_opt_suite)
+    CUTE_RUN_TEST(cp8_emu_opt_tests);
+CUTE_TEST_CASE_SUITE_END
+
+// --
+
 CUTE_TEST_CASE(cp8_tests)
     CUTE_RUN_TEST_SUITE(cp8_macros_suite);
-    CUTE_RUN_TEST_SUITE(cp8_mem_suite);
     CUTE_RUN_TEST_SUITE(cp8_ctx_suite);
+    CUTE_RUN_TEST_SUITE(cp8_mem_suite);
     CUTE_RUN_TEST_SUITE(cp8_vid_suite);
     CUTE_RUN_TEST_SUITE(cp8_cpu_suite);
-    CUTE_RUN_TEST_SUITE(cp8_opt_suite);
     CUTE_RUN_TEST_SUITE(cp8_rom_suite);
+    CUTE_RUN_TEST_SUITE(cp8_emu_opt_suite);
 CUTE_TEST_CASE_END
 
 CUTE_MAIN(cp8_tests);

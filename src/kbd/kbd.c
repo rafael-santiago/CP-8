@@ -27,7 +27,7 @@ static int g_kbd_lkey = 0;
 
 #define CP8_KBD_YPAD 1
 
-// INFO(Rafael): Here goes all pixel maps for the retro 8-bit keys stuff.
+// INFO(Rafael): The following craziness is related with all pixel maps for the retro 8-bit keys stuff.
 
 static cp8_blitchar_pxmap_t g_kbd_k0 = {
     { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff },
@@ -252,6 +252,8 @@ static cp8_blitchar_pxmap_t g_kbd_kf = {
     { 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff },
     { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff }
 };
+
+// WARN(Rafael): Boring code and kind of stupid do not waste your time reading it..
 
 static void cp8_kbdkdraw(const unsigned char k, const int kcolor);
 

@@ -83,8 +83,7 @@ ___cp8_romld_epilogue:
         fclose(rom);
     }
 
-    if (romdata != NULL) {
-        // INFO(Rafael): With love to true UNIX Dinosaurs out there! :-)
+    if (romdata != NULL) { // INFO(Rafael): With love to true UNIX Dinosaurs out there! :-)
         free(romdata);
     }
 
