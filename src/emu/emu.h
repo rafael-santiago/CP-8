@@ -6,9 +6,13 @@
  *
  */
 
-#ifndef CP8_ROM_LOADER_H
-#define CP8_ROM_LOADER_H 1
+#ifndef CP8_EMU_EMU_H
+#define CP8_EMU_EMU_H 1
 
-int cp8_romld(const char *filepath, char *msg);
+void cp8_emu_init(int argc, char **argv);
+
+int cp8_emu_exec(void);
+
+void cp8_emu_finis(void);
 
 #endif

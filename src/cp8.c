@@ -6,14 +6,12 @@
  *
  */
 
-#include <vid/vid.h>
-#include <kbd/kbd.h>
-#include <accacia.h>
+#include <emu/emu.h>
 
 int main(int argc, char **argv) {
-    cp8_vidinit();
-    cp8_kbdinit();
-    accacia_getch();
-    cp8_vidfini();
-    return 0;
+    int exit_code = 1;
+    cp8_emu_init(argc, argv);
+    exit_code = cp8_emu_exec();
+    cp8_emu_finis();
+    return exit_code;
 }
