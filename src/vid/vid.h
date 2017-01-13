@@ -21,7 +21,7 @@ void cp8_vidset_tcolor(const int color);
 
 void cp8_vidset_bcolor(const int color);
 
-int cp8_vidfini(void);
+int cp8_vidfinis(void);
 
 void cp8_vidblitchar(const int x, const int y, const cp8_blitchar_pxmap_t pxmap, const int tcolor, const int bcolor);
 

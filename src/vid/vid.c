@@ -89,7 +89,7 @@ int cp8_vidinit(void) {
     accacia_gotoxy(CP8_VID_MONITOR_X, CP8_VID_MONITOR_Y);
 }
 
-int cp8_vidfini(void) {
+int cp8_vidfinis(void) {
     cp8_vidcls();
     accacia_screennormalize();
     accacia_clrscr();
