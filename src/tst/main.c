@@ -794,20 +794,26 @@ CUTE_TEST_CASE_END
 
 CUTE_TEST_CASE(cp8_emu_opt_tests)
     char *argv[] = { "--processor=cp8",
-                     "--dummy-flag" };
-    int argc = 2;
+                     "--dummy-flag",
+                     "test" };
+    int argc = sizeof(argv) / sizeof(argv[0]);
 
     CUTE_ASSERT(cp8_emu_option("processor", NULL) == NULL);
     CUTE_ASSERT(cp8_emu_bool_option("dummy-flag", 0) == 0);
+    CUTE_ASSERT(cp8_emu_task_option("test") == 0);
 
     cp8_emu_set_argc_argv(argc, argv);
 
     CUTE_ASSERT(strcmp(cp8_emu_option("processor", NULL), "cp8") == 0);
     CUTE_ASSERT(cp8_emu_bool_option("dummy-flag", 0) == 1);
     CUTE_ASSERT(cp8_emu_option("dummy-flag", NULL) == NULL);
+    CUTE_ASSERT(cp8_emu_option("test", NULL) == NULL);
+    CUTE_ASSERT(cp8_emu_bool_option("test", 0) == 0);
+    CUTE_ASSERT(cp8_emu_task_option("test") == 1);
 
     CUTE_ASSERT(cp8_emu_option("foo", NULL) == NULL);
     CUTE_ASSERT(cp8_emu_bool_option("bar", 1) == 1);
+    CUTE_ASSERT(cp8_emu_task_option("foobar") == 0);
 CUTE_TEST_CASE_END
 
 CUTE_TEST_CASE_SUITE(cp8_emu_opt_suite)

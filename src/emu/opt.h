@@ -13,6 +13,8 @@ char *cp8_emu_option(const char *option, char *default_value);
 
 int cp8_emu_bool_option(const char *option, int default_value);
 
+int cp8_emu_task_option(const char *option);
+
 void cp8_emu_set_argc_argv(int argc, char **argv);
 
 #endif
