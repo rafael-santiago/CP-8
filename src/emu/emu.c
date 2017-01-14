@@ -13,6 +13,7 @@
 #include <emu/tsk.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 typedef int (*cp8_emu_task)(void);
 
@@ -23,8 +24,10 @@ struct cp8_emu_tasks_ctx {
 
 #define cp8_emu_register_task(t) { #t, cp8_emu_tsk_ ## t }
 
-void cp8_emu_init(int argc, char **argv) {
-    cp8_emu_set_argc_argv(argc, argv);
+void cp8_emu_init(struct cp8_ctx *cp8) {
+    if (cp8 != NULL) {
+        memset(cp8, 0, sizeof(struct cp8_ctx));
+    }
     cp8_vidinit();
     cp8_kbdinit();
 }
@@ -45,7 +48,7 @@ int cp8_emu_exec(void) {
     }
 
     if (curr_task == NULL) {
-        printf("ERROR: any valid task was supplied.\n");
+        printf("ERROR: no valid tasks were supplied.\n");
         exit_code = 1;
     }
 

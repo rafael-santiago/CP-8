@@ -9,7 +9,9 @@
 #ifndef CP8_EMU_EMU_H
 #define CP8_EMU_EMU_H 1
 
-void cp8_emu_init(int argc, char **argv);
+#include <ctx/types.h>
+
+void cp8_emu_init(struct cp8_ctx *cp8);
 
 int cp8_emu_exec(void);
 
