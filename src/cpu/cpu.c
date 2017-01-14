@@ -24,6 +24,8 @@
 #include <cpu/itp/itpe.h>
 #include <cpu/itp/itpf.h>
 
+static unsigned short g_cp8_cpu_last_instr = 0;
+
 #define set_cp8_itrap(i) ( itp ## i ## _gate )
 
 struct cp8_ins_gate_ctx g_cp8_cpu_ins_gate[] = {
@@ -34,3 +36,11 @@ struct cp8_ins_gate_ctx g_cp8_cpu_ins_gate[] = {
 };
 
 #undef set_cp8_itrap
+
+void cp8_cpu_set_last_instruction(unsigned short instr) {
+    g_cp8_cpu_last_instr = instr;
+}
+
+unsigned short cp8_cpu_last_instruction(void) {
+    return g_cp8_cpu_last_instr;
+}

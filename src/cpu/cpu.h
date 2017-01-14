@@ -17,6 +17,10 @@ struct cp8_ins_gate_ctx {
 
 extern struct cp8_ins_gate_ctx g_cp8_cpu_ins_gate[];
 
+void cp8_cpu_set_last_instruction(unsigned short instr);
+
+unsigned short cp8_cpu_last_instruction(void);
+
 // INFO(Rafael): Let's avoid a useless call overhead.
 
 #define cp8_cpu_exec(i, c) ( g_cp8_cpu_ins_gate[((i) >> 12)].itrap( cp8_asm_var(nnn, i), c) )

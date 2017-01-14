@@ -37,17 +37,23 @@ int cp8_emu_tsk_emulate(void) {
 
     cp8_emu_init(&processor);
 
-    instr = cp8_memget(CP8_TEXT_START);
+#define cp8_emu_next_instr(pc) ( ((unsigned short)(cp8_memget(CP8_TEXT_START + (pc) )) << 8 ) |\
+                                  cp8_memget(CP8_TEXT_START + ((pc) + 1)) )
+
+    instr = cp8_emu_next_instr(processor.pc);
 
     while (k != CP8_EMU_TSK_EMULATE_KQUIT) {
         processor.pc = cp8_cpu_exec(instr, &processor);
-        instr = cp8_memget(CP8_TEXT_START + processor.pc);
+        instr = cp8_emu_next_instr(processor.pc);
         if (accacia_kbhit()) {
             k = accacia_getch();
         }
     }
 
+#undef cp8_emu_next_instr
+
     cp8_emu_finis();
 
     return 0;
 }
+
