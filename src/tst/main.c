@@ -290,13 +290,13 @@ CUTE_TEST_CASE_END
 CUTE_TEST_CASE(cp8_cpu_JP_addr_tests)
     struct cp8_ctx cp8;
     cp8.pc = 0;
-    CUTE_ASSERT(cp8_cpu_exec(0x121e, &cp8) == 0x021e);
+    CUTE_ASSERT(cp8_cpu_exec(0x121e, &cp8) == (0x021e - CP8_TEXT_START));
 CUTE_TEST_CASE_END
 
 CUTE_TEST_CASE(cp8_cpu_CALL_addr_tests)
     struct cp8_ctx cp8;
     cp8.pc = 0;
-    CUTE_ASSERT(cp8_cpu_exec(0x2ca1, &cp8) == 0x0ca1);
+    CUTE_ASSERT(cp8_cpu_exec(0x2ca1, &cp8) == (0x0ca1 - CP8_TEXT_START));
 CUTE_TEST_CASE_END
 
 CUTE_TEST_CASE(cp8_cpu_SE_Vx_byte_tests)
@@ -550,8 +550,8 @@ CUTE_TEST_CASE(cp8_cpu_JP_V0_addr_tests)
 
     cp8.pc = 0;
     cp8.v[0] = 0xb1;
-    CUTE_ASSERT(cp8_cpu_exec(0xbabc, &cp8) == 0xb6d);
-    CUTE_ASSERT(cp8.pc == 0xb6d);
+    CUTE_ASSERT(cp8_cpu_exec(0xbabc, &cp8) == (0xb6d - CP8_TEXT_START));
+    CUTE_ASSERT(cp8.pc == (0xb6d - CP8_TEXT_START));
 CUTE_TEST_CASE_END
 
 CUTE_TEST_CASE(cp8_cpu_RND_Vx_byte_tests)

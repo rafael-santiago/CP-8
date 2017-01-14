@@ -10,7 +10,7 @@
 
 unsigned short itpb_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
     // INFO(Rafael): JP V0, addr
-    cp8->pc = nnn + cp8->v[0];
+    cp8->pc = (nnn - CP8_TEXT_START) + cp8->v[0];
 
     return cp8->pc;
 }

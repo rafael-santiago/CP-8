@@ -10,6 +10,6 @@
 
 unsigned short itp1_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
     // INFO(Rafael): JP addr
-    cp8->pc = nnn;
+    cp8->pc = (nnn - CP8_TEXT_START);
     return cp8->pc;
 }
