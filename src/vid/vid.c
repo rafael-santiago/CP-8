@@ -7,10 +7,12 @@
  */
 
 #include <vid/vid.h>
+#include <mem/mem.h>
 #include <ctx/types.h>
 #include <accacia.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define CP8_VID_MONITOR_W ( CP8_VIDMEM_MX + 1 )
 
@@ -27,6 +29,25 @@
 static int g_cp8_vid_tcolor = AC_BCOLOR_WHITE;
 
 static int g_cp8_vid_bcolor = AC_TCOLOR_BLACK;
+
+static unsigned char g_cp8_vid_builtin_fsprites[] = {
+    0xf0, 0x90, 0x90, 0x90, 0xf0, // 0
+    0x20, 0x60, 0x20, 0x20, 0x70, // 1
+    0xf0, 0x10, 0xf0, 0x80, 0xf0, // 2
+    0xf0, 0x10, 0xf0, 0x10, 0xf0, // 3
+    0x90, 0x90, 0xf0, 0x10, 0x10, // 4
+    0xf0, 0x80, 0xf0, 0x10, 0xf0, // 5
+    0xf0, 0x80, 0xf0, 0x90, 0xf0, // 6
+    0xf0, 0x10, 0x20, 0x40, 0x40, // 7
+    0xf0, 0x90, 0xf0, 0x90, 0xf0, // 8
+    0xf0, 0x90, 0xf0, 0x10, 0xf0, // 9
+    0xf0, 0x90, 0xf0, 0x90, 0x90, // A
+    0xe0, 0x90, 0xe0, 0x90, 0xe0, // B
+    0xf0, 0x80, 0x80, 0x80, 0xf0, // C
+    0xe0, 0x90, 0x90, 0x90, 0xe0, // D
+    0xf0, 0x80, 0xf0, 0x80, 0xf0, // E
+    0xf0, 0x80, 0xf0, 0x80, 0x80  // F
+};
 
 // INFO(Rafael): This silly video memory map will help us on collision detection.
 
@@ -80,13 +101,20 @@ static int cp8_vidplotpixel(const unsigned char x, const unsigned char y) {
 }
 
 int cp8_vidinit(void) {
+    size_t f;
+
     accacia_clrscr();
     cp8_vidcls();
+
     accacia_drawboxgine(CP8_VID_MONITOR_X, CP8_VID_MONITOR_Y, CP8_VID_MONITOR_W, CP8_VID_MONITOR_H,
                         g_cp8_vid_bcolor, g_cp8_vid_tcolor, "", g_cp8_vid_bcolor, "", g_cp8_vid_bcolor,
                         1, 1, 1, 1);
     accacia_screennormalize();
     accacia_gotoxy(CP8_VID_MONITOR_X, CP8_VID_MONITOR_Y);
+
+    for (f = 0; f < sizeof(g_cp8_vid_builtin_fsprites); f++) {
+        cp8_memset(CP8_FSPRITE_REGION + f, g_cp8_vid_builtin_fsprites[f]);
+    }
 }
 
 int cp8_vidfinis(void) {

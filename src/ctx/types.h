@@ -21,7 +21,9 @@
 
 #define CP8_MEMORY_SZ 4096
 
-#define CP8_TEXT_START 0x200 // INFO(Rafael): No support for ETI 660 computers' ROMs.
+#define CP8_TEXT_START 0x0200 // INFO(Rafael): No support for ETI 660 computers' ROMs.
+
+#define CP8_FSPRITE_REGION 0x0
 
 #define CP8_VIDMEM_MX 64
 
