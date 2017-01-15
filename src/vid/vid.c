@@ -16,7 +16,7 @@
 
 #define CP8_VID_MONITOR_W ( CP8_VIDMEM_MX + 2 )
 
-#define CP8_VID_MONITOR_H ( CP8_VIDMEM_MY + 2 )
+#define CP8_VID_MONITOR_H ( CP8_VIDMEM_MY + 1 )
 
 #define CP8_VID_MONITOR_X 1
 
