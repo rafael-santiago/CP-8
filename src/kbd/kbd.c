@@ -19,7 +19,7 @@ static int g_kbd_pcolor = AC_BCOLOR_CYAN;
 
 static int g_kbd_lkey = 0;
 
-#define CP8_KBD_X 67
+#define CP8_KBD_X 68
 
 #define CP8_KBD_Y 1
 
