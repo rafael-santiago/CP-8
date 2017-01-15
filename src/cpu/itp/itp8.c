@@ -64,5 +64,5 @@ unsigned short itp8_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
 
     }
 
-    return (cp8->pc + 1);
+    return (cp8->pc + 2);
 }

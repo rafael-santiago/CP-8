@@ -26,5 +26,5 @@ unsigned short itpe_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
             break;
     }
 
-    return cp8->pc;
+    return cp8->pc + 2;
 }

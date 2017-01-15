@@ -72,5 +72,5 @@ unsigned short itpf_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
             break;
     }
 
-    return (cp8->pc + 1);
+    return (cp8->pc + 2);
 }

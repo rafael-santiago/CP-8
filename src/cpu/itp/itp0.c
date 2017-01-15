@@ -11,7 +11,7 @@
 #include <vid/vid.h>
 
 unsigned short itp0_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
-    unsigned short next = 1;
+    unsigned short next = 2;
 
     switch (nnn) {
         case 0x00e0:
