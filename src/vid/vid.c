@@ -53,7 +53,7 @@ static unsigned char g_cp8_vid_builtin_fsprites[] = {
 
 static unsigned char g_cp8_vidmem[CP8_VIDMEM_MX][CP8_VIDMEM_MY];
 
-static int cp8_vidplotpixel(const unsigned char x, const unsigned char y);
+static int cp8_vidplotpixel(const unsigned char x, const unsigned char y, const unsigned char pixmap);
 
 void cp8_vidcls(void) {
     int x, y;
@@ -72,31 +72,46 @@ void cp8_vidcls(void) {
 }
 
 int cp8_viddrw(const unsigned char x, const unsigned char y, const unsigned char *sprite, const char unsigned sn) {
-    unsigned char h, w;
-    unsigned char cx, cy;
+    unsigned char h;
+    unsigned char cy = y;
     int collide = 0;
-    cy = y;
     for (h = 0; h < sn; h++) {
-        cx = x;
-        for (w = 0; w < 8; w++) {
-            if (cp8_vidplotpixel(cx, cy)) {
-                collide = 1;
-            }
-            cx++;
+        if (cp8_vidplotpixel(x, cy, sprite[h])) {
+            collide = 1;
         }
         cy++;
     }
     return collide;
 }
 
-static int cp8_vidplotpixel(const unsigned char x, const unsigned char y) {
-    int abs_x = (x % CP8_VIDMEM_MX), abs_y = (y % CP8_VIDMEM_MY);
-    int collide = ((g_cp8_vidmem[abs_x][abs_y] ^ 1) == 0);
-    g_cp8_vidmem[abs_x][abs_y] = 1;
-    accacia_textbackground(g_cp8_vid_tcolor);
-    accacia_gotoxy(cp8_monitor_x(x), cp8_monitor_y(y)); printf(" ");
-    accacia_gotoxy(CP8_VID_MONITOR_X, CP8_VID_MONITOR_Y);
-    accacia_screennormalize();
+static int cp8_vidplotpixel(const unsigned char x, const unsigned char y, const unsigned char pixmap) {
+    int abs_x, abs_y;
+    int bit;
+    int cx = x, px = 0;
+    int collide = 0;
+
+    for (bit = 0; bit < 8; bit++) {
+        abs_x = (cx % CP8_VIDMEM_MX);
+        abs_y = (y % CP8_VIDMEM_MY);
+
+        px = ((pixmap >> (7 - bit)) & 1);
+
+        g_cp8_vidmem[abs_x][abs_y] ^= px;
+
+        if (g_cp8_vidmem[abs_x][abs_y]) {
+            accacia_textbackground(g_cp8_vid_tcolor);
+        } else {
+            accacia_textbackground(g_cp8_vid_bcolor);
+            collide = 1;
+        }
+
+        accacia_gotoxy(cp8_monitor_x(cx), cp8_monitor_y(y)); printf(" ");
+        accacia_gotoxy(1, 1);
+        accacia_screennormalize();
+
+        cx++;
+    }
+
     return collide;
 }
 

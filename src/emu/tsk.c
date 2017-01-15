@@ -45,7 +45,7 @@ int cp8_emu_tsk_emulate(void) {
     while (k != CP8_EMU_TSK_EMULATE_KQUIT) {
         accacia_gotoxy(1, 1); printf("INSTRUCTION = 0x%.4X", instr);
         accacia_gotoxy(1, 2); printf("PC = 0x%.4X", processor.pc);
-        accacia_getch();
+        //accacia_getch();
         processor.pc = cp8_cpu_exec(instr, &processor);
         instr = cp8_emu_next_instr(processor.pc);
         if (accacia_kbhit()) {
