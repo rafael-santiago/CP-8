@@ -22,7 +22,6 @@ unsigned short itp0_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
         case 0x00ee:
             //  INFO(Rafael): RET
             cp8->pc = cp8_pop(cp8);
-            next = 0;
             break;
 
         default:

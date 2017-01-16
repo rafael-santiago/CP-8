@@ -11,6 +11,7 @@
 #include <emu/opt.h>
 #include <mem/mem.h>
 #include <cpu/cpu.h>
+#include <kbd/kbd.h>
 #include <rom/ld.h>
 #include <ctx/types.h>
 #include <accacia.h>
@@ -42,15 +43,19 @@ int cp8_emu_tsk_emulate(void) {
 
     instr = cp8_emu_next_instr(processor.pc);
 
-    while (k != CP8_EMU_TSK_EMULATE_KQUIT) {
+    while (cp8_kbdlkey() != CP8_EMU_TSK_EMULATE_KQUIT) {
         //accacia_gotoxy(1, 1); printf("INSTRUCTION = 0x%.4X", instr);
         //accacia_gotoxy(1, 2); printf("PC = 0x%.4X", processor.pc);
         //accacia_getch();
         processor.pc = cp8_cpu_exec(instr, &processor);
         instr = cp8_emu_next_instr(processor.pc);
-        if (accacia_kbhit()) {
-            k = accacia_getch();
+        if (processor.st > 0) {
+            processor.st--;
         }
+        if (processor.dt > 0) {
+            processor.dt--;
+        }
+        usleep(CP8_CLOCK_TICK_MICRO_SECS);
     }
 
 #undef cp8_emu_next_instr

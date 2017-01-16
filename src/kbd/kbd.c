@@ -257,19 +257,64 @@ static cp8_blitchar_pxmap_t g_kbd_kf = {
 
 static void cp8_kbdkdraw(const unsigned char k, const int kcolor);
 
-static void cp8_kbdkpress(const unsigned char k);
+//static void cp8_kbdkpress(const unsigned char k);
 
 struct cp8_kbd_key_ctx {
     cp8_blitchar_pxmap_t *key;
     const int x, y;
 };
 
-int cp8_kbdhit(void) {
-    return accacia_kbhit();
+static unsigned char kval(const unsigned char k) {
+    unsigned char v = k;
+    switch (v) {
+
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            v = v - '0';
+            break;
+
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+            v = v - 55;
+            break;
+
+    }
+
+    return v;
+}
+
+unsigned char cp8_kbdhit(void) {
+    if (accacia_kbhit()) {
+        g_kbd_lkey = accacia_getch();
+        return kval(g_kbd_lkey);
+    }
+    return 0xff;
 }
 
 unsigned char cp8_kbdwait(void) {
-    return accacia_getch();
+    unsigned char k = 0xff;
+
+    accacia_textcolor(AC_TCOLOR_BLACK);
+
+    g_kbd_lkey = accacia_getch();
+
+    return kval(g_kbd_lkey);
+}
+
+unsigned char cp8_kbdlkey(void) {
+    return g_kbd_lkey;
 }
 
 static void cp8_kbdkdraw(const unsigned char k, const int kcolor) {
@@ -349,11 +394,11 @@ static void cp8_kbdkdraw(const unsigned char k, const int kcolor) {
     accacia_gotoxy(1, 1);
 }
 
-static void cp8_kbdkpress(const unsigned char k) {
+/*static void cp8_kbdkpress(const unsigned char k) {
     cp8_kbdkdraw(g_kbd_lkey, g_kbd_tcolor);
     cp8_kbdkdraw(k, g_kbd_pcolor);
     g_kbd_lkey = k;
-}
+}*/
 
 void cp8_kbdinit(void) {
     cp8_kbdkdraw('1', g_kbd_tcolor);

@@ -9,10 +9,12 @@
 #ifndef CP8_KBD_KBD_H
 #define CP8_KBD_KBD_H 1
 
-int cp8_kbdhit(void);
+unsigned char cp8_kbdhit(void);
 
 unsigned char cp8_kbdwait(void);
 
 void cp8_kbdinit(void);
+
+unsigned char cp8_kbdlkey(void);
 
 #endif

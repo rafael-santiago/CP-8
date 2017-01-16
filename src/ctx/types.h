@@ -31,6 +31,8 @@
 
 #define CP8_REGISTER_NR 0x10
 
+#define CP8_CLOCK_TICK_MICRO_SECS  2500  // INFO(Rafael): 60 Hz (16.6666666..7 in ms)
+
 struct cp8_ctx {
     unsigned char v[CP8_REGISTER_NR];
     unsigned char dt, st;

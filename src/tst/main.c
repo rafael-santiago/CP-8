@@ -284,7 +284,7 @@ CUTE_TEST_CASE(cp8_cpu_RET_tests)
     struct cp8_ctx cp8;
     cp8.pc = 0;
     cp8_push(&cp8, 0xc0de);
-    CUTE_ASSERT(cp8_cpu_exec(0x00ee, &cp8) == 0xc0de);
+    CUTE_ASSERT(cp8_cpu_exec(0x00ee, &cp8) == 0xc0e0);
 CUTE_TEST_CASE_END
 
 CUTE_TEST_CASE(cp8_cpu_JP_addr_tests)
