@@ -22,7 +22,7 @@
 
 #define CP8_VID_MONITOR_Y 8
 
-#define cp8_monitor_x(x) ( ( (x) % CP8_VIDMEM_MX )  + CP8_VID_MONITOR_X + 1 )
+#define cp8_monitor_x(x) ( ( (x) % CP8_VIDMEM_MX ) + CP8_VID_MONITOR_X + 1 )
 
 #define cp8_monitor_y(y) ( ( (y) % CP8_VIDMEM_MY ) + CP8_VID_MONITOR_Y + 1 )
 
@@ -69,18 +69,21 @@ void cp8_vidcls(void) {
     }
 
     accacia_screennormalize();
+
 }
 
 int cp8_viddrw(const unsigned char x, const unsigned char y, const unsigned char *sprite, const char unsigned sn) {
     unsigned char h;
     unsigned char cy = y;
     int collide = 0;
+
     for (h = 0; h < sn; h++) {
         if (cp8_vidplotpixel(x, cy, sprite[h])) {
             collide = 1;
         }
         cy++;
     }
+
     return collide;
 }
 
@@ -96,21 +99,27 @@ static int cp8_vidplotpixel(const unsigned char x, const unsigned char y, const 
 
         px = ((pixmap >> (7 - bit)) & 1);
 
+        if (px == 1 && g_cp8_vidmem[abs_x][abs_y] == 1) {
+            collide = 1;
+        }
+
         g_cp8_vidmem[abs_x][abs_y] ^= px;
 
         if (g_cp8_vidmem[abs_x][abs_y]) {
             accacia_textbackground(g_cp8_vid_tcolor);
         } else {
             accacia_textbackground(g_cp8_vid_bcolor);
-            collide = 1;
         }
 
         accacia_gotoxy(cp8_monitor_x(cx), cp8_monitor_y(y)); printf(" ");
-        accacia_gotoxy(1, 1);
+
         accacia_screennormalize();
 
         cx++;
     }
+
+    accacia_gotoxy(1, 1);
+
 
     return collide;
 }
@@ -173,6 +182,7 @@ void cp8_vidblitchar(const int x, const int y, const cp8_blitchar_pxmap_t pxmap,
             accacia_screennormalize();
         }
     }
+
 }
 
 #undef cp8_vid_monitor_x

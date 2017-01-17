@@ -296,21 +296,37 @@ static unsigned char kval(const unsigned char k) {
 }
 
 unsigned char cp8_kbdhit(void) {
+    unsigned char key = 0xff;
+
+    accacia_savecursorposition();
+
     if (accacia_kbhit()) {
         g_kbd_lkey = accacia_getch();
-        return kval(g_kbd_lkey);
+        key = kval(g_kbd_lkey);
     }
-    return 0xff;
+
+    accacia_restorecursorposition();
+
+    return key;
 }
 
 unsigned char cp8_kbdwait(void) {
     unsigned char k = 0xff;
 
+    accacia_savecursorposition();
+
     accacia_textcolor(AC_TCOLOR_BLACK);
 
-    g_kbd_lkey = accacia_getch();
+    while (!(k >= 0x0 && k <= 0xf)) {
+        if (accacia_kbhit()) {
+            g_kbd_lkey = accacia_getch();
+            k = kval(g_kbd_lkey);
+        }
+    }
 
-    return kval(g_kbd_lkey);
+    accacia_restorecursorposition();
+
+    return k;
 }
 
 unsigned char cp8_kbdlkey(void) {

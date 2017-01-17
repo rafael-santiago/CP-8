@@ -14,6 +14,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <termios.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
+
 
 typedef int (*cp8_emu_task)(void);
 
@@ -22,9 +26,21 @@ struct cp8_emu_tasks_ctx {
     cp8_emu_task task;
 };
 
+static struct termios g_oldattr;
+
 #define cp8_emu_register_task(t) { #t, cp8_emu_tsk_ ## t }
 
 void cp8_emu_init(struct cp8_ctx *cp8) {
+    struct termios attr;
+    int res;
+
+    tcgetattr(STDIN_FILENO, &attr);
+    g_oldattr = attr;
+    attr.c_lflag = ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &attr);
+    ioctl(STDIN_FILENO, FIONREAD, &res);
+    setbuf(stdout, NULL);
+
     if (cp8 != NULL) {
         memset(cp8, 0, sizeof(struct cp8_ctx));
     }
@@ -57,6 +73,7 @@ int cp8_emu_exec(void) {
 
 void cp8_emu_finis(void) {
     cp8_vidfinis();
+    tcsetattr(STDIN_FILENO, TCSANOW, &g_oldattr);
 }
 
 #undef cp8_emu_register_task
