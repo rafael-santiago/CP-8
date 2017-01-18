@@ -12,6 +12,7 @@
 
 unsigned short itpf_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
     unsigned char x, y;
+    unsigned short next = 2;
 
     switch (nnn & 0xff) {
         case 0x07:
@@ -21,7 +22,12 @@ unsigned short itpf_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
 
         case 0x0a:
             // INFO(Rafael): LD Vx, K
-            cp8_vreg(cp8_asm_var(x, nnn), cp8) = cp8_kbdwait();
+            x = cp8_kbdhit();
+            if (x != 0xff) {
+                cp8_vreg(cp8_asm_var(x, nnn), cp8) = x;
+            } else {
+                next = 0;
+            }
             break;
 
         case 0x15:
@@ -72,5 +78,5 @@ unsigned short itpf_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
             break;
     }
 
-    return (cp8->pc + 2);
+    return (cp8->pc + next);
 }

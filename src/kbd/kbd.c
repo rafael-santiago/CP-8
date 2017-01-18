@@ -10,6 +10,8 @@
 #include <vid/vid.h>
 #include <accacia.h>
 #include <ctype.h>
+#include <string.h>
+#include <pthread.h>
 
 static int g_kbd_tcolor = AC_BCOLOR_WHITE;
 
@@ -18,6 +20,16 @@ static int g_kbd_bcolor = AC_BCOLOR_BLACK;
 static int g_kbd_pcolor = AC_BCOLOR_CYAN;
 
 static int g_kbd_lkey = 0;
+
+static int g_cp8_kpad[0xf] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+static int g_ttr = 0;
+
+static pthread_mutex_t g_cp8_kpad_mtx = PTHREAD_MUTEX_INITIALIZER;
+
+static void cp8_kbdread(void);
+
+static void *cp8_kbdloop(void *args);
 
 #define CP8_KBD_X 68
 
@@ -257,15 +269,13 @@ static cp8_blitchar_pxmap_t g_kbd_kf = {
 
 static void cp8_kbdkdraw(const unsigned char k, const int kcolor);
 
-//static void cp8_kbdkpress(const unsigned char k);
-
 struct cp8_kbd_key_ctx {
     cp8_blitchar_pxmap_t *key;
     const int x, y;
 };
 
 static unsigned char kval(const unsigned char k) {
-    unsigned char v = k;
+    unsigned char v = toupper(k);
     switch (v) {
 
         case '0':
@@ -296,6 +306,23 @@ static unsigned char kval(const unsigned char k) {
 }
 
 unsigned char cp8_kbdhit(void) {
+    unsigned char retval = 0xff;
+    size_t k;
+
+    pthread_mutex_lock(&g_cp8_kpad_mtx);
+
+    for (k = 0; k < 0xf && retval == 0xff; k++) {
+        if (g_cp8_kpad[k] == 1) {
+            retval = k;
+        }
+    }
+
+    pthread_mutex_unlock(&g_cp8_kpad_mtx);
+
+    return retval;
+}
+
+static void cp8_kbdread(void) {
     unsigned char key = 0xff;
 
     accacia_savecursorposition();
@@ -305,28 +332,15 @@ unsigned char cp8_kbdhit(void) {
         key = kval(g_kbd_lkey);
     }
 
-    accacia_restorecursorposition();
-
-    return key;
-}
-
-unsigned char cp8_kbdwait(void) {
-    unsigned char k = 0xff;
-
-    accacia_savecursorposition();
-
-    accacia_textcolor(AC_TCOLOR_BLACK);
-
-    while (!(k >= 0x0 && k <= 0xf)) {
-        if (accacia_kbhit()) {
-            g_kbd_lkey = accacia_getch();
-            k = kval(g_kbd_lkey);
-        }
+    if (key >= 0x0 && key <= 0xf) {
+        pthread_mutex_lock(&g_cp8_kpad_mtx);
+        memset(g_cp8_kpad, 0, sizeof(g_cp8_kpad));
+        g_cp8_kpad[key] = 1;
+        g_ttr = 1000;
+        pthread_mutex_unlock(&g_cp8_kpad_mtx);
     }
 
     accacia_restorecursorposition();
-
-    return k;
 }
 
 unsigned char cp8_kbdlkey(void) {
@@ -410,13 +424,15 @@ static void cp8_kbdkdraw(const unsigned char k, const int kcolor) {
     accacia_gotoxy(1, 1);
 }
 
-/*static void cp8_kbdkpress(const unsigned char k) {
-    cp8_kbdkdraw(g_kbd_lkey, g_kbd_tcolor);
-    cp8_kbdkdraw(k, g_kbd_pcolor);
-    g_kbd_lkey = k;
-}*/
-
 void cp8_kbdinit(void) {
+    pthread_t kbd;
+    pthread_attr_t kbdattr;
+    pthread_mutexattr_t attr;
+
+    pthread_mutexattr_init(&attr);
+    pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+    pthread_mutex_init(&g_cp8_kpad_mtx, &attr);
+
     cp8_kbdkdraw('1', g_kbd_tcolor);
     cp8_kbdkdraw('2', g_kbd_tcolor);
     cp8_kbdkdraw('3', g_kbd_tcolor);
@@ -433,4 +449,23 @@ void cp8_kbdinit(void) {
     cp8_kbdkdraw('0', g_kbd_tcolor);
     cp8_kbdkdraw('b', g_kbd_tcolor);
     cp8_kbdkdraw('f', g_kbd_tcolor);
+
+    pthread_attr_init(&kbdattr);
+    pthread_create(&kbd, &kbdattr, cp8_kbdloop, NULL);
+}
+
+static void *cp8_kbdloop(void *args) {
+    while (g_kbd_lkey != 27) {
+        cp8_kbdread();
+        usleep(1);
+        pthread_mutex_lock(&g_cp8_kpad_mtx);
+        if (g_ttr == 0) {
+            memset(g_cp8_kpad, 0, sizeof(g_cp8_kpad));
+        } else {
+            g_ttr--;
+        }
+        pthread_mutex_unlock(&g_cp8_kpad_mtx);
+    }
+
+    return NULL;
 }

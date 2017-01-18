@@ -44,18 +44,19 @@ int cp8_emu_tsk_emulate(void) {
     instr = cp8_emu_next_instr(processor.pc);
 
     while (cp8_kbdlkey() != CP8_EMU_TSK_EMULATE_KQUIT) {
-        //accacia_gotoxy(1, 1); printf("INSTRUCTION = 0x%.4X", instr);
-        //accacia_gotoxy(1, 2); printf("PC = 0x%.4X", processor.pc);
-        //accacia_getch();
-        processor.pc = cp8_cpu_exec(instr, &processor);
-        instr = cp8_emu_next_instr(processor.pc);
-        if (processor.st > 0) {
-            processor.st--;
-        }
         if (processor.dt > 0) {
             processor.dt--;
         }
+
+        if (processor.st > 0) {
+            processor.st--;
+        }
+
+        processor.pc = cp8_cpu_exec(instr, &processor);
+
         usleep(CP8_CLOCK_TICK_MICRO_SECS);
+
+        instr = cp8_emu_next_instr(processor.pc);
     }
 
 #undef cp8_emu_next_instr

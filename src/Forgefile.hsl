@@ -39,6 +39,7 @@ CP-8.prologue() {
 
     $additional_libraries.add_item("lib/acc/lib");
     $library_flags.add_item("-laccacia");
+    $library_flags.add_item("-lpthread");
 
     # INFO(Rafael): Let's register all additional libraries that need an "on-the-fly build".
     #               E.g.: git-submodules.
