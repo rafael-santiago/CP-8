@@ -23,7 +23,7 @@ Done.
 
 ## How to build it?
 
-My code my rules. I use my own [build system](https://github.com/rafael-santiago). Once ``Hefesto`` well-installed and working
+My code my rules. I use my own [build system](https://github.com/rafael-santiago/hefesto). Once ``Hefesto`` well-installed and working
 on your system you should move to CP-8's ``src`` sub-directory and invoke ``hefesto`` from there... Something like:
 
 ```

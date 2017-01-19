@@ -57,7 +57,8 @@ int cp8_emu_tsk_emulate(void) {
         }
 #else
         // INFO(Rafael): Nasty trick to make some games more playable on a non multi-threaded environment.
-        //               If you are under MINIX 3.3.1 or under this is valuable for you.
+        //               If you are under MINIX 3.3.1 or under, this code shi.. I mean trick is valuable
+        //               for you.
 
         for (cycles = 0; cycles < CP8_MAX_INSTRUCTIONS_PER_CYCLE; cycles++) {
             cp8_kbdread();
@@ -86,4 +87,3 @@ int cp8_emu_tsk_emulate(void) {
 
     return 0;
 }
-
