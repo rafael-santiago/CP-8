@@ -15,4 +15,12 @@ void cp8_kbdinit(void);
 
 unsigned char cp8_kbdlkey(void);
 
+#ifdef NO_PTHREAD_SUPPORT
+
+void cp8_kbdrelease(void);
+
+void cp8_kbdread(void);
+
+#endif
+
 #endif

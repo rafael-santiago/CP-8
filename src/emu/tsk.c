@@ -25,6 +25,7 @@ int cp8_emu_tsk_emulate(void) {
     unsigned short instr;
     struct cp8_ctx processor;
     unsigned char k = CP8_EMU_TSK_EMULATE_KQUIT >> 1;
+    int cycles;
 
     if (rom == NULL) {
         printf("ERROR: the option --rom is missing.\n");
@@ -44,6 +45,32 @@ int cp8_emu_tsk_emulate(void) {
     instr = cp8_emu_next_instr(processor.pc);
 
     while (cp8_kbdlkey() != CP8_EMU_TSK_EMULATE_KQUIT) {
+
+        // INFO(Rafael): To execute the instructions per cycles was the way that I found to reduce the flickering a little.
+        //               However, a CHIP-8 game normally can flicker and still all here is done over an ANSI/TERM.
+
+#ifndef NO_PTHREAD_SUPPORT
+        for (cycles = 0; cycles < CP8_MAX_INSTRUCTIONS_PER_CYCLE; cycles++) {
+            processor.pc = cp8_cpu_exec(instr, &processor);
+            instr = cp8_emu_next_instr(processor.pc);
+            usleep(1);
+        }
+#else
+        // INFO(Rafael): Nasty trick to make some games more playable on a non multi-threaded environment.
+        //               If you are under MINIX 3.3.1 or under this is valuable for you.
+
+        for (cycles = 0; cycles < CP8_MAX_INSTRUCTIONS_PER_CYCLE; cycles++) {
+            cp8_kbdread();
+            processor.pc = cp8_cpu_exec(instr, &processor);
+            cp8_kbdread();
+            instr = cp8_emu_next_instr(processor.pc);
+            cp8_kbdread();
+            usleep(1);
+        }
+
+        cp8_kbdrelease();
+
+#endif
         if (processor.dt > 0) {
             processor.dt--;
         }
@@ -51,12 +78,6 @@ int cp8_emu_tsk_emulate(void) {
         if (processor.st > 0) {
             processor.st--;
         }
-
-        processor.pc = cp8_cpu_exec(instr, &processor);
-
-        usleep(CP8_CLOCK_TICK_MICRO_SECS);
-
-        instr = cp8_emu_next_instr(processor.pc);
     }
 
 #undef cp8_emu_next_instr

@@ -23,13 +23,21 @@ static int g_kbd_lkey = 0;
 
 static int g_cp8_kpad[0xf] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
+#ifndef NO_PTHREAD_SUPPORT
+
 static int g_ttr = 0;
 
 static pthread_mutex_t g_cp8_kpad_mtx = PTHREAD_MUTEX_INITIALIZER;
 
+static void *cp8_kbdloop(void *args);
+
 static void cp8_kbdread(void);
 
-static void *cp8_kbdloop(void *args);
+#else
+
+void cp8_kbdrelease(void);
+
+#endif
 
 #define CP8_KBD_X 68
 
@@ -309,7 +317,9 @@ unsigned char cp8_kbdhit(void) {
     unsigned char retval = 0xff;
     size_t k;
 
+#ifndef NO_PTHREAD_SUPPORT
     pthread_mutex_lock(&g_cp8_kpad_mtx);
+#endif
 
     for (k = 0; k < 0xf && retval == 0xff; k++) {
         if (g_cp8_kpad[k] == 1) {
@@ -317,12 +327,30 @@ unsigned char cp8_kbdhit(void) {
         }
     }
 
+#ifndef NO_PTHREAD_SUPPORT
     pthread_mutex_unlock(&g_cp8_kpad_mtx);
+#endif
 
     return retval;
 }
 
+#ifdef NO_PTHREAD_SUPPORT
+
+void cp8_kbdrelease(void) {
+    memset(g_cp8_kpad, 0, sizeof(g_cp8_kpad));
+}
+
+#endif
+
+#ifndef NO_PTHREAD_SUPPORT
+
 static void cp8_kbdread(void) {
+
+#else
+
+void cp8_kbdread(void) {
+
+#endif
     unsigned char key = 0xff;
 
     accacia_savecursorposition();
@@ -333,11 +361,15 @@ static void cp8_kbdread(void) {
     }
 
     if (key >= 0x0 && key <= 0xf) {
+#ifndef NO_PTHREAD_SUPPORT
         pthread_mutex_lock(&g_cp8_kpad_mtx);
+#endif
         memset(g_cp8_kpad, 0, sizeof(g_cp8_kpad));
         g_cp8_kpad[key] = 1;
-        g_ttr = 1000;
+#ifndef NO_PTHREAD_SUPPORT
+        g_ttr = 100;
         pthread_mutex_unlock(&g_cp8_kpad_mtx);
+#endif
     }
 
     accacia_restorecursorposition();
@@ -425,6 +457,7 @@ static void cp8_kbdkdraw(const unsigned char k, const int kcolor) {
 }
 
 void cp8_kbdinit(void) {
+#ifndef NO_PTHREAD_SUPPORT
     pthread_t kbd;
     pthread_attr_t kbdattr;
     pthread_mutexattr_t attr;
@@ -432,6 +465,7 @@ void cp8_kbdinit(void) {
     pthread_mutexattr_init(&attr);
     pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
     pthread_mutex_init(&g_cp8_kpad_mtx, &attr);
+#endif
 
     cp8_kbdkdraw('1', g_kbd_tcolor);
     cp8_kbdkdraw('2', g_kbd_tcolor);
@@ -450,9 +484,14 @@ void cp8_kbdinit(void) {
     cp8_kbdkdraw('b', g_kbd_tcolor);
     cp8_kbdkdraw('f', g_kbd_tcolor);
 
+#ifndef NO_PTHREAD_SUPPORT
     pthread_attr_init(&kbdattr);
     pthread_create(&kbd, &kbdattr, cp8_kbdloop, NULL);
+#endif
 }
+
+
+#ifndef NO_PTHREAD_SUPPORT
 
 static void *cp8_kbdloop(void *args) {
     while (g_kbd_lkey != 27) {
@@ -469,3 +508,5 @@ static void *cp8_kbdloop(void *args) {
 
     return NULL;
 }
+
+#endif
