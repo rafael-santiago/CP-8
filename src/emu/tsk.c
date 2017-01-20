@@ -21,13 +21,15 @@
 
 #define CP8_EMU_TSK_EMULATE_KQUIT 27
 
+static int cp8_emu_get_cycles(void);
+
 int cp8_emu_tsk_emulate(void) {
     char *rom = cp8_emu_option("rom", NULL);
     char msg[255];
     unsigned short instr;
     struct cp8_ctx processor;
     unsigned char k = CP8_EMU_TSK_EMULATE_KQUIT >> 1;
-    int cycles;
+    int cycles, cycles_nr;
 
     if (rom == NULL) {
         printf("ERROR: the option --rom is missing.\n");
@@ -38,6 +40,8 @@ int cp8_emu_tsk_emulate(void) {
         printf("%s", msg);
         return 1;
     }
+
+    cycles_nr = cp8_emu_get_cycles();
 
 ___let_the_good_times_roll:   // INFO(Rafael): When CPU was singular.... (...)
 
@@ -54,7 +58,7 @@ ___let_the_good_times_roll:   // INFO(Rafael): When CPU was singular.... (...)
         //               However, a CHIP-8 game normally can flicker and still all here is done over an ANSI/TERM.
 
 #ifndef NO_PTHREAD_SUPPORT
-        for (cycles = 0; cycles < CP8_MAX_INSTRUCTIONS_PER_CYCLE; cycles++) {
+        for (cycles = 0; cycles < cycles_nr; cycles++) {
             processor.pc = cp8_cpu_exec(instr, &processor);
             instr = cp8_emu_next_instr(processor.pc);
             usleep(5);
@@ -64,7 +68,7 @@ ___let_the_good_times_roll:   // INFO(Rafael): When CPU was singular.... (...)
         //               If you are under MINIX 3.3.1 or under, this code shi.. I mean trick is valuable
         //               for you.
 
-        for (cycles = 0; cycles < CP8_MAX_INSTRUCTIONS_PER_CYCLE; cycles++) {
+        for (cycles = 0; cycles < cycles_nr; cycles++) {
             cp8_kbdread();
             processor.pc = cp8_cpu_exec(instr, &processor);
             cp8_kbdread();
@@ -99,4 +103,24 @@ ___let_the_good_times_roll:   // INFO(Rafael): When CPU was singular.... (...)
     cp8_emu_finis();
 
     return 0;
+}
+
+static int cp8_emu_get_cycles(void) {
+#define cp8_cycles_as_str(c) #c
+#define cp8_default_cycles(c) cp8_cycles_as_str(c)
+    char *cycles = cp8_emu_option("cycles", cp8_default_cycles(CP8_MAX_INSTRUCTIONS_PER_CYCLE));
+
+    char *cp = cycles, *cp_end = cp + strlen(cycles);
+
+    while (cp != cp_end) {
+        if (!isdigit(*cp)) {
+            cycles = cp8_default_cycles(CP8_MAX_INSTRUCTIONS_PER_CYCLE);
+            break;
+        }
+        cp++;
+    }
+
+    return atoi(cycles);
+#undef cp8_cycles_as_str
+#undef cp8_default_cycles
 }
