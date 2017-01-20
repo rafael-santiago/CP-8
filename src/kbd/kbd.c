@@ -510,3 +510,21 @@ static void *cp8_kbdloop(void *args) {
 }
 
 #endif
+
+void cp8_kbdsetkey(unsigned char key) {
+#ifndef NO_PTHREAD_SUPPORT
+    pthread_mutex_lock(&g_cp8_kpad_mtx);
+#endif
+
+    g_kbd_lkey = key;
+    key = kval(key);
+
+    if (key >= 0x0 && key <= 0xf) {
+        memset(g_cp8_kpad, 0, sizeof(g_cp8_kpad));
+        g_cp8_kpad[key] = 1;
+    }
+
+#ifndef NO_PTHREAD_SUPPORT
+    pthread_mutex_unlock(&g_cp8_kpad_mtx);
+#endif
+}

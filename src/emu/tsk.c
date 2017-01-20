@@ -15,7 +15,9 @@
 #include <rom/ld.h>
 #include <ctx/types.h>
 #include <accacia.h>
+#include <ctype.h>
 #include <stdio.h>
+#include <string.h>
 
 #define CP8_EMU_TSK_EMULATE_KQUIT 27
 
@@ -37,6 +39,8 @@ int cp8_emu_tsk_emulate(void) {
         return 1;
     }
 
+___let_the_good_times_roll:   // INFO(Rafael): When CPU was singular.... (...)
+
     cp8_emu_init(&processor);
 
 #define cp8_emu_next_instr(pc) ( ((unsigned short)(cp8_memget(CP8_TEXT_START + (pc) )) << 8 ) |\
@@ -44,7 +48,7 @@ int cp8_emu_tsk_emulate(void) {
 
     instr = cp8_emu_next_instr(processor.pc);
 
-    while (cp8_kbdlkey() != CP8_EMU_TSK_EMULATE_KQUIT) {
+    while ((k = toupper(cp8_kbdlkey())) != CP8_EMU_TSK_EMULATE_KQUIT) {
 
         // INFO(Rafael): To execute the instructions per cycles was the way that I found to reduce the flickering a little.
         //               However, a CHIP-8 game normally can flicker and still all here is done over an ANSI/TERM.
@@ -78,6 +82,15 @@ int cp8_emu_tsk_emulate(void) {
 
         if (processor.st > 0) {
             processor.st--;
+        }
+
+        if (k == 'r' || k == 'R') {
+            cp8_kbdsetkey(CP8_EMU_TSK_EMULATE_KQUIT);
+            cp8_emu_finis();
+            usleep(100);
+            memset(&processor, 0, sizeof(processor));
+            cp8_kbdsetkey(CP8_EMU_TSK_EMULATE_KQUIT >> 1);
+            goto ___let_the_good_times_roll;
         }
     }
 

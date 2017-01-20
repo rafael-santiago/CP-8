@@ -23,4 +23,6 @@ void cp8_kbdread(void);
 
 #endif
 
+void cp8_kbdsetkey(unsigned char key);
+
 #endif
