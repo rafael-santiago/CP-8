@@ -31,7 +31,7 @@
 
 #define CP8_REGISTER_NR 0x10
 
-#define CP8_MAX_INSTRUCTIONS_PER_CYCLE 20  // INFO(Rafael): Depending on your environment you should increment/decrement it.
+#define CP8_MAX_INSTRUCTIONS_PER_CYCLE 220  // INFO(Rafael): Depending on your environment you should increment/decrement it.
 
 struct cp8_ctx {
     unsigned char v[CP8_REGISTER_NR];

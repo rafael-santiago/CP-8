@@ -53,7 +53,7 @@ int cp8_emu_tsk_emulate(void) {
         for (cycles = 0; cycles < CP8_MAX_INSTRUCTIONS_PER_CYCLE; cycles++) {
             processor.pc = cp8_cpu_exec(instr, &processor);
             instr = cp8_emu_next_instr(processor.pc);
-            usleep(1);
+            usleep(5);
         }
 #else
         // INFO(Rafael): Nasty trick to make some games more playable on a non multi-threaded environment.
