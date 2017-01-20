@@ -610,7 +610,7 @@ CUTE_TEST_CASE(cp8_cpu_LD_F_Vx_tests)
     cp8.i = 0;
     cp8.v[0x1] = 0x99;
     CUTE_ASSERT(cp8_cpu_exec(0xf129, &cp8) == 2);
-    CUTE_ASSERT(cp8.i == 0x99);
+    CUTE_ASSERT(cp8.i == 0x2fd);
 CUTE_TEST_CASE_END
 
 CUTE_TEST_CASE(cp8_cpu_LD_B_Vx_tests)

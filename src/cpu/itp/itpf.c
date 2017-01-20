@@ -47,7 +47,7 @@ unsigned short itpf_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
 
         case 0x29:
             // INFO(Rafael): LD I, Vx (?)
-            cp8->i = cp8_vreg(cp8_asm_var(x, nnn), cp8);
+            cp8->i = cp8_vreg(cp8_asm_var(x, nnn), cp8) * 0x5;
             break;
 
         case 0x33:
