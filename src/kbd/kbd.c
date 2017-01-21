@@ -26,6 +26,10 @@ static int g_cp8_kpad[0x10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 #ifndef NO_PTHREAD_SUPPORT
 
+#define CP8_KBD_TTR_CEIL 100
+
+#define CP8_KBD_TTR_FLOOR -300
+
 static int g_ttr = 0;
 
 static pthread_mutex_t g_cp8_kpad_mtx = PTHREAD_MUTEX_INITIALIZER;
@@ -213,7 +217,7 @@ void cp8_kbdread(void) {
         memset(g_cp8_kpad, 0, sizeof(g_cp8_kpad));
         g_cp8_kpad[key] = 1;
 #ifndef NO_PTHREAD_SUPPORT
-        g_ttr = 100;
+        g_ttr = CP8_KBD_TTR_CEIL;
         cp8_kbdkdraw(g_kbd_lkey, g_kbd_tcolor);
         pthread_mutex_unlock(&g_cp8_kpad_mtx);
 #endif
@@ -398,9 +402,9 @@ static void *cp8_kbdloop(void *args) {
         if (g_ttr == 0) {
             memset(g_cp8_kpad, 0, sizeof(g_cp8_kpad));
             g_ttr = -1;
-        } else if (g_ttr > -300) {
+        } else if (g_ttr > CP8_KBD_TTR_FLOOR) {
             g_ttr--;
-            if (g_ttr == -299) {
+            if (g_ttr == CP8_KBD_TTR_FLOOR + 1) {
                cp8_kbdkdraw(g_kbd_lkey, g_kbd_tcolor);
             }
         }
@@ -443,7 +447,6 @@ static void cp8_kbddrwk(const unsigned char x, const unsigned char y, const int 
 static void cp8_kbdplotpixel(const unsigned char x, const unsigned char y, const int color, const unsigned char pixmap) {
     int bit;
     int cx = x, px = 0;
-    int collide = 0;
 
     for (bit = 0; bit < 8; bit++) {
         px = ((pixmap >> (7 - bit)) & 1);

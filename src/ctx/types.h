@@ -11,6 +11,12 @@
 
 #include <stdlib.h>
 
+#ifndef NO_PTHREAD_SUPPORT
+
+#include <pthread.h>
+
+#endif
+
 #define CP8_STACK_SZ 0x10
 
 #define cp8_stack_ceil(cp8) ( ( &(cp8)->stack[CP8_STACK_SZ - 1] ) )
@@ -33,7 +39,12 @@
 
 #define CP8_MAX_INSTRUCTIONS_PER_CYCLE 220  // INFO(Rafael): Depending on your environment you should increment/decrement it.
 
+#define CP8_CLOCK_IN_MICROSECS 16000
+
 struct cp8_ctx {
+#ifndef NO_PTHREAD_SUPPORT
+    pthread_mutex_t mtx;
+#endif
     unsigned char v[CP8_REGISTER_NR];
     unsigned char dt, st;
     unsigned short i;
@@ -63,5 +74,7 @@ struct cp8_ctx {
 #define CP8_BLITCHAR_MW  8
 
 typedef unsigned char cp8_blitchar_pxmap_t[CP8_BLITCHAR_MH][CP8_BLITCHAR_MW];
+
+#define CP8_EMU_TSK_EMULATE_KQUIT 27
 
 #endif

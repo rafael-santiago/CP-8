@@ -12,14 +12,13 @@
 #include <mem/mem.h>
 #include <cpu/cpu.h>
 #include <kbd/kbd.h>
+#include <tmr/tmr.h>
 #include <rom/ld.h>
 #include <ctx/types.h>
 #include <accacia.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
-
-#define CP8_EMU_TSK_EMULATE_KQUIT 27
 
 static int cp8_emu_get_cycles(void);
 
@@ -30,6 +29,12 @@ int cp8_emu_tsk_emulate(void) {
     struct cp8_ctx processor;
     unsigned char k = CP8_EMU_TSK_EMULATE_KQUIT >> 1;
     int cycles, cycles_nr;
+#ifndef NO_PTHREAD_SUPPORT
+    pthread_t processor_tmu;
+    pthread_attr_t processor_tmu_attr;
+
+    pthread_attr_init(&processor_tmu_attr);
+#endif
 
     if (rom == NULL) {
         printf("ERROR: the option --rom is missing.\n");
@@ -44,6 +49,10 @@ int cp8_emu_tsk_emulate(void) {
     cycles_nr = cp8_emu_get_cycles();
 
 ___let_the_good_times_roll:   // INFO(Rafael): When CPU was singular.... (...)
+
+#ifndef NO_PTHREAD_SUPPORT
+    pthread_create(&processor_tmu, &processor_tmu_attr, cp8_tmrtck, &processor);
+#endif
 
     cp8_emu_init(&processor);
 
@@ -74,12 +83,11 @@ ___let_the_good_times_roll:   // INFO(Rafael): When CPU was singular.... (...)
             cp8_kbdread();
             instr = cp8_emu_next_instr(processor.pc);
             cp8_kbdread();
-            usleep(1);
+            usleep(CP8_CLOCK_IN_MICORSECS);
         }
 
         cp8_kbdrelease();
 
-#endif
         if (processor.dt > 0) {
             processor.dt--;
         }
@@ -88,6 +96,7 @@ ___let_the_good_times_roll:   // INFO(Rafael): When CPU was singular.... (...)
             processor.st--;
         }
 
+#endif
         if (k == 'r' || k == 'R') {
             cp8_kbdsetkey(CP8_EMU_TSK_EMULATE_KQUIT);
             cp8_emu_finis();

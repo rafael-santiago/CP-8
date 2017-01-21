@@ -33,6 +33,9 @@ static struct termios g_oldattr;
 void cp8_emu_init(struct cp8_ctx *cp8) {
     struct termios attr;
     int res;
+#ifndef NO_PTHREAD_SUPPORT
+    pthread_mutexattr_t mtx_attr;
+#endif
 
     tcgetattr(STDIN_FILENO, &attr);
     g_oldattr = attr;
@@ -43,6 +46,11 @@ void cp8_emu_init(struct cp8_ctx *cp8) {
 
     if (cp8 != NULL) {
         memset(cp8, 0, sizeof(struct cp8_ctx));
+#ifndef NO_PTHREAD_SUPPORT
+        pthread_mutexattr_init(&mtx_attr);
+        pthread_mutexattr_settype(&mtx_attr, PTHREAD_MUTEX_RECURSIVE);
+        pthread_mutex_init(&cp8->mtx, &mtx_attr);
+#endif
     }
     cp8_vidinit();
     cp8_kbdinit();

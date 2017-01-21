@@ -16,8 +16,15 @@ unsigned short itpf_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
 
     switch (nnn & 0xff) {
         case 0x07:
+#ifndef NO_PTHREAD_SUPPORT
+            pthread_mutex_lock(&cp8->mtx);
+#endif
             // INFO(Rafael): LD Vx, DT
             cp8_vreg(cp8_asm_var(x, nnn), cp8) = cp8->dt;
+
+#ifndef NO_PTHREAD_SUPPORT
+            pthread_mutex_unlock(&cp8->mtx);
+#endif
             break;
 
         case 0x0a:
@@ -31,13 +38,29 @@ unsigned short itpf_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
             break;
 
         case 0x15:
+#ifndef NO_PTHREAD_SUPPORT
+            pthread_mutex_lock(&cp8->mtx);
+#endif
+
             // INFO(Rafael): LD DT, Vx
             cp8->dt = cp8_vreg(cp8_asm_var(x, nnn), cp8);
+
+#ifndef NO_PTHREAD_SUPPORT
+            pthread_mutex_unlock(&cp8->mtx);
+#endif
             break;
 
         case 0x18:
+#ifndef NO_PTHREAD_SUPPORT
+            pthread_mutex_lock(&cp8->mtx);
+#endif
+
             // INFO(Rafael): LD ST, Vx
             cp8->st = cp8_vreg(cp8_asm_var(x, nnn), cp8);
+
+#ifndef NO_PTHREAD_SUPPORT
+            pthread_mutex_unlock(&cp8->mtx);
+#endif
             break;
 
         case 0x1e:
