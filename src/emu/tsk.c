@@ -67,6 +67,14 @@ ___let_the_good_times_roll:   // INFO(Rafael): When CPU was singular.... (...)
         //               However, a CHIP-8 game normally can flicker and still all here is done over an ANSI/TERM.
 
 #ifndef NO_PTHREAD_SUPPORT
+        //  TODO(Rafael): It should be improved on. It would be better if executed $cycles_delta$ instead of a silly constant,
+        //                btw really true in just one moment. This crazy cycles stuff is done because put something like
+        //                "sleep(60Hz)" in the middle of the emulation loop would be pretty stupid. At this point, we just
+        //                have to slow down a little. However, the ST and DT should be decremented at ~60Hz.
+        //
+        //  DUH(Rafael):  Yes, $cycles_delta$ should be evaluated based on the real machine. It is about you execute now
+        //                what should be executed in the past, thus we can compensate the "buzzing" introduced by the
+        //                real machine in your crazy equation. Who knows... d:-S
         for (cycles = 0; cycles < cycles_nr; cycles++) {
             processor.pc = cp8_cpu_exec(instr, &processor);
             instr = cp8_emu_next_instr(processor.pc);
@@ -75,7 +83,8 @@ ___let_the_good_times_roll:   // INFO(Rafael): When CPU was singular.... (...)
 #else
         // INFO(Rafael): Nasty trick to make some games more playable on a non multi-threaded environment.
         //               If you are under MINIX 3.3.1 or under, this code shi.. I mean trick is valuable
-        //               for you.
+        //               for you. Few games should be emulated using this crap, the more static stuff should
+        //               works.
 
         for (cycles = 0; cycles < cycles_nr; cycles++) {
             cp8_kbdread();
