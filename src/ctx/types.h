@@ -77,4 +77,6 @@ typedef unsigned char cp8_blitchar_pxmap_t[CP8_BLITCHAR_MH][CP8_BLITCHAR_MW];
 
 #define CP8_EMU_TSK_EMULATE_KQUIT 27
 
+#define CP8_VERSION "0.0.1"
+
 #endif

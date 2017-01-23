@@ -1,0 +1,48 @@
+.TH cp8 1 "January 23, 2017" "version 0.0.1" "USER COMMANDS"
+.SH NAME
+cp8 \- an CHIP-8 emulator/interpreter
+.SH SYNOPSIS
+.B cp8 [\fIOPTIONS\fR]
+.SH DESCRIPTION
+The \fIcp8\fR is a \fICHIP-8\fR emulator for \fIANSI/TERM\fR environments.
+
+This application works based on tasks and should be called on the following way:
+
+.B cp8 \fI<tasks>\fR \fI<options>\fR
+
+.SH TASKS
+
+.nf
+.ta
++ -------------------- + -------------------------------------------------- +
+| Task Option          | Description                                        |
++ -------------------- + -------------------------------------------------- +
+| emulate              | Performs the interpretation of an input ROM file.  |
++--------------------- + -------------------------------------------------- +
+
+.SH OPTIONS
+.TP
+\-\-rom=\fI<file-path>\fR
+Indicates the \fIROM\fR file-path that will be used on indicated \fItask\fR.
+
+.TP
+\-\-cycles=\fIinteger\fR
+Indicates the number of instrutions executed per cycle.
+
+.PP
+.SH ADDITIONAL INFO
+You need to press \fIESC\fR to exit.
+
+If you want to reset/restart the emulation processes hit \fIR/r\fR key.
+
+.PP
+.SH EXIT STATUS
+If the execution succeeds \fIcp8\fR returns zero, otherwise non zero values will be returned.
+
+.PP
+.SH
+HOMEPAGE
+.TP
+https://github.com/rafael-santiago/CP-8
+.SH AUTHOR
+Rafael Santiago <voidbrainvoid@gmail.com>

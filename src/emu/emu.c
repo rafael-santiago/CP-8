@@ -35,6 +35,10 @@ static struct termios g_oldattr;
 
 #define cp8_emu_register_task(t) { #t, cp8_emu_tsk_ ## t }
 
+static int cp8_help(void);
+
+static int cp8_version(void);
+
 void cp8_emu_init(struct cp8_ctx *cp8) {
     struct termios attr;
     int res;
@@ -75,6 +79,12 @@ int cp8_emu_exec(void) {
     int exit_code = 0;
     cp8_emu_task curr_task = NULL;
 
+    if (cp8_emu_bool_option("version", 0)) {
+        return cp8_version();
+    } else if (cp8_emu_bool_option("help", 0)) {
+        return cp8_help();
+    }
+
     for (t = 0; t < tasks_nr; t++) {
         if (cp8_emu_task_option(tasks[t].name)) {
             exit_code += (curr_task = tasks[t].task)();
@@ -107,3 +117,16 @@ void cp8_emu_unlock(void) {
 }
 
 #endif
+
+static int cp8_help(void) {
+    printf("usage: cp8 emulate <options>\n\n"
+           "cp8 is Copyright (C) 2017 by Rafael Santiago.\n\n"
+           "Bug reports, feedback, etc: <voidbrainvoid@gmail.com> "
+           "or <https://github.com/rafael-santiago/CP-8/issues>\n");
+    return 0;
+}
+
+static int cp8_version(void) {
+    printf("cp8-%s\n", CP8_VERSION);
+    return 0;
+}
