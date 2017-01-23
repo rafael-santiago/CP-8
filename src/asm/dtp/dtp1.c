@@ -6,11 +6,11 @@
  *
  */
 
-#include <cpu/itp/itpa.h>
+#include <asm/dtp/dtp1.h>
+#include <stdio.h>
 
-unsigned short itpa_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
-    // INFO(Rafael): LD I, addr
-    cp8->i = nnn;
-
-    return (cp8->pc + 2);
+char *cp8_dsm_dtp1(unsigned short nnn) {
+    static char mne[255];
+    sprintf(mne, "JP 0x%.3x", nnn);
+    return &mne[0];
 }

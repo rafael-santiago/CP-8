@@ -6,11 +6,9 @@
  *
  */
 
-#include <cpu/itp/itpa.h>
+#ifndef CP8_ASM_DTP_DTPE_H
+#define CP8_ASM_DTP_DTPE_H 1
 
-unsigned short itpa_gate(const unsigned short nnn, struct cp8_ctx *cp8) {
-    // INFO(Rafael): LD I, addr
-    cp8->i = nnn;
+char *cp8_dsm_dtpe(unsigned short nnn);
 
-    return (cp8->pc + 2);
-}
+#endif

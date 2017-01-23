@@ -1,2 +1,2 @@
---forgefiles=Forgefile.hsl --Forgefile-projects=CP-8 --bin-output-dir=../bin --obj-output-dir=obj --modules=cpu,cpu/itp,ctx,kbd,mem,opt,vid,rom,emu,tmr
+--forgefiles=Forgefile.hsl --Forgefile-projects=CP-8 --bin-output-dir=../bin --obj-output-dir=obj --modules=cpu,cpu/itp,ctx,kbd,mem,opt,vid,rom,emu,tmr,asm,asm/dtp
 
