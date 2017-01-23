@@ -9,6 +9,6 @@ struct cp8_dsm_ctx {
 
 extern struct cp8_dsm_ctx g_cp8_dsm_dtp[0x10];
 
-#define cp8_asm_umount(i) ( g_cp8_dsm_itrap[(i) >> 12].mne( cp8_asm_var(nnn, i) ) )
+#define cp8_asm_umount(i) ( g_cp8_dsm_dtp[(i) >> 12].mne( cp8_asm_var(nnn, i) ) )
 
 #endif

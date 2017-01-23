@@ -49,6 +49,10 @@ char *cp8_dsm_dtpf(unsigned short nnn) {
         case 0x65:
             sprintf(mne, "LD V%.1X, [I]", cp8_asm_var(x, nnn));
             break;
+
+        default:
+            return NULL;
+            break;
     }
 
     return &mne[0];

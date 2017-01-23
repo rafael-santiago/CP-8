@@ -22,7 +22,7 @@ char *cp8_dsm_dtp0(unsigned short nnn) {
             break;
 
         default:
-            mne[0] = 0;
+            return NULL;
             break;
     }
 

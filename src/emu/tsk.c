@@ -15,6 +15,7 @@
 #include <tmr/tmr.h>
 #include <rom/ld.h>
 #include <ctx/types.h>
+#include <asm/umount.h>
 #include <accacia.h>
 #include <ctype.h>
 #include <stdio.h>
@@ -141,4 +142,50 @@ static int cp8_emu_get_cycles(void) {
     return atoi(cycles);
 #undef cp8_cycles_as_str
 #undef cp8_default_cycles
+}
+
+int cp8_emu_tsk_umount(void) {
+    char *rom = NULL, *out = NULL, *mne = NULL;
+    unsigned short instr;
+    FILE *fp = NULL;
+    FILE *op = stdout;
+
+    rom = cp8_emu_option("rom", NULL);
+
+    if (rom == NULL) {
+        printf("ERROR: the option --rom is missing.\n");
+        return 1;
+    }
+
+    if ((fp = fopen(rom, "rb")) == NULL) {
+        printf("ERROR: unable to read \"%s\".", rom);
+        return 1;
+    }
+
+    out = cp8_emu_option("out", NULL);
+    if (out != NULL) {
+        op = fopen(out, "w");
+        if (op == NULL) {
+            printf("WARN: unable to write \"%s\", using stdout.", out);
+            op = stdout;
+        }
+    }
+
+    fread(&instr, 1, sizeof(instr), fp);
+
+    while (!feof(fp)) {
+        mne = cp8_asm_umount(instr);
+        if (mne != NULL) {
+            fprintf(op, "%s\n", mne);
+        }
+        fread(&instr, 1, sizeof(instr), fp);
+    }
+
+    fclose(fp);
+
+    if (op != stdout) {
+        fclose(op);
+    }
+
+    return 0;
 }

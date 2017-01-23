@@ -72,7 +72,8 @@ void cp8_emu_init(struct cp8_ctx *cp8) {
 
 int cp8_emu_exec(void) {
     struct cp8_emu_tasks_ctx tasks [] = {
-        cp8_emu_register_task(emulate)
+        cp8_emu_register_task(emulate),
+        cp8_emu_register_task(umount)
     };
     const size_t tasks_nr = sizeof(tasks) / sizeof(tasks[0]);
     size_t t;

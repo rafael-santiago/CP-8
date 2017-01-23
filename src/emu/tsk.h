@@ -11,4 +11,6 @@
 
 int cp8_emu_tsk_emulate(void);
 
+int cp8_emu_tsk_umount(void);
+
 #endif

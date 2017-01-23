@@ -21,6 +21,10 @@ char *cp8_dsm_dtpe(unsigned short nnn) {
         case 0xa1:
             sprintf(mne, "SKPN V%.1X", cp8_asm_var(x, nnn));
             break;
+
+        default:
+            return NULL;
+            break;
     }
 
     return &mne[0];
