@@ -23,6 +23,6 @@ void cp8_vidset_bcolor(const int color);
 
 int cp8_vidfinis(void);
 
-void cp8_vidblitchar(const int x, const int y, const cp8_blitchar_pxmap_t pxmap, const int tcolor, const int bcolor);
+void cp8_viddrws(const unsigned char x, const unsigned char y, const int color, const unsigned char *sprite, const char unsigned sn);
 
 #endif

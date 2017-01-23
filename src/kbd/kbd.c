@@ -44,10 +44,6 @@ void cp8_kbdrelease(void);
 
 #endif
 
-static void cp8_kbdplotpixel(const unsigned char x, const unsigned char y, const int color, const unsigned char pixmap);
-
-static void cp8_kbddrwk(const unsigned char x, const unsigned char y, const int color, const unsigned char *sprite, const char unsigned sn);
-
 #define CP8_KBD_X 70
 
 #define CP8_KBD_Y 15
@@ -236,7 +232,6 @@ static void cp8_kbdkdraw(const unsigned char key, const int kcolor) {
         g_kbd_k0, g_kbd_k1, g_kbd_k2, g_kbd_k3, g_kbd_k4, g_kbd_k5, g_kbd_k6, g_kbd_k7,
         g_kbd_k8, g_kbd_k9, g_kbd_ka, g_kbd_kb, g_kbd_kc, g_kbd_kd, g_kbd_ke, g_kbd_kf
     };
-    // WARN(Rafael): Good luck with this awful look...
 
     switch (tolower(key)) {
         // CLUE(Rafael): Line 1
@@ -346,9 +341,9 @@ static void cp8_kbdkdraw(const unsigned char key, const int kcolor) {
 
     accacia_savecursorposition();
 
-    cp8_kbddrwk(x, y + !g_cp8_kpad[k], g_kbd_bcolor, kbd_k[k], 5);
+    cp8_viddrws(x, y + !g_cp8_kpad[k], g_kbd_bcolor, kbd_k[k], CP8_BLITCHAR_MH);
 
-    cp8_kbddrwk(x, y + g_cp8_kpad[k], kcolor, kbd_k[k], 5);
+    cp8_viddrws(x, y + g_cp8_kpad[k], kcolor, kbd_k[k], CP8_BLITCHAR_MH);
 
     accacia_restorecursorposition();
 }
@@ -397,7 +392,7 @@ void cp8_kbdinit(void) {
 static void *cp8_kbdloop(void *args) {
     while (g_kbd_lkey != 27) {
         cp8_kbdread();
-        usleep(1);
+        usleep(100);
         pthread_mutex_lock(&g_cp8_kpad_mtx);
         if (g_ttr == 0) {
             memset(g_cp8_kpad, 0, sizeof(g_cp8_kpad));
@@ -432,33 +427,4 @@ void cp8_kbdsetkey(unsigned char key) {
 #ifndef NO_PTHREAD_SUPPORT
     pthread_mutex_unlock(&g_cp8_kpad_mtx);
 #endif
-}
-
-static void cp8_kbddrwk(const unsigned char x, const unsigned char y, const int color, const unsigned char *sprite, const char unsigned sn) {
-    unsigned char h;
-    unsigned char cy = y;
-
-    for (h = 0; h < sn; h++) {
-        cp8_kbdplotpixel(x, cy, color, sprite[h]);
-        cy++;
-    }
-}
-
-static void cp8_kbdplotpixel(const unsigned char x, const unsigned char y, const int color, const unsigned char pixmap) {
-    int bit;
-    int cx = x, px = 0;
-
-    for (bit = 0; bit < 8; bit++) {
-        px = ((pixmap >> (7 - bit)) & 1);
-
-        accacia_textbackground((px == 1) ? color : g_kbd_bcolor);
-
-        accacia_gotoxy(cx, y); printf(" ");
-
-        accacia_screennormalize();
-
-        cx++;
-    }
-
-    accacia_gotoxy(1, 1);
 }

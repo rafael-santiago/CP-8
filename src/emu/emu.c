@@ -18,6 +18,11 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
+#ifndef NO_PTHREAD_SUPPORT
+
+static pthread_mutex_t g_cp8_emu_mtx = PTHREAD_MUTEX_INITIALIZER;
+
+#endif
 
 typedef int (*cp8_emu_task)(void);
 
@@ -44,11 +49,16 @@ void cp8_emu_init(struct cp8_ctx *cp8) {
     ioctl(STDIN_FILENO, FIONREAD, &res);
     setbuf(stdout, NULL);
 
+#ifndef NO_PTHREAD_SUPPORT
+    pthread_mutexattr_init(&mtx_attr);
+    pthread_mutexattr_settype(&mtx_attr, PTHREAD_MUTEX_RECURSIVE);
+
+    pthread_mutex_init(&g_cp8_emu_mtx, &mtx_attr);
+#endif
+
     if (cp8 != NULL) {
         memset(cp8, 0, sizeof(struct cp8_ctx));
 #ifndef NO_PTHREAD_SUPPORT
-        pthread_mutexattr_init(&mtx_attr);
-        pthread_mutexattr_settype(&mtx_attr, PTHREAD_MUTEX_RECURSIVE);
         pthread_mutex_init(&cp8->mtx, &mtx_attr);
 #endif
     }
@@ -85,3 +95,15 @@ void cp8_emu_finis(void) {
 }
 
 #undef cp8_emu_register_task
+
+#ifndef NO_PTHREAD_SUPPORT
+
+void cp8_emu_lock(void) {
+    pthread_mutex_lock(&g_cp8_emu_mtx);
+}
+
+void cp8_emu_unlock(void) {
+    pthread_mutex_unlock(&g_cp8_emu_mtx);
+}
+
+#endif

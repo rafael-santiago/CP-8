@@ -17,4 +17,12 @@ int cp8_emu_exec(void);
 
 void cp8_emu_finis(void);
 
+#ifndef NO_PTHREAD_SUPPORT
+
+void cp8_emu_lock(void);
+
+void cp8_emu_unlock(void);
+
+#endif
+
 #endif

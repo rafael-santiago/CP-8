@@ -7,6 +7,7 @@
  */
 
 #include <vid/vid.h>
+#include <emu/emu.h>
 #include <mem/mem.h>
 #include <ctx/types.h>
 #include <accacia.h>
@@ -55,8 +56,12 @@ static unsigned char g_cp8_vidmem[CP8_VIDMEM_MX][CP8_VIDMEM_MY];
 
 static int cp8_vidplotpixel(const unsigned char x, const unsigned char y, const unsigned char pixmap);
 
+static void cp8_vidplotpixel_s(const unsigned char x, const unsigned char y, const int color, const unsigned char pixmap);
+
 void cp8_vidcls(void) {
     int x, y;
+
+    cp8_emu_lock();
 
     memset(g_cp8_vidmem, 0, sizeof(g_cp8_vidmem));
 
@@ -70,6 +75,8 @@ void cp8_vidcls(void) {
 
     accacia_screennormalize();
 
+    cp8_emu_unlock();
+
 }
 
 int cp8_viddrw(const unsigned char x, const unsigned char y, const unsigned char *sprite, const char unsigned sn) {
@@ -77,12 +84,16 @@ int cp8_viddrw(const unsigned char x, const unsigned char y, const unsigned char
     unsigned char cy = y;
     int collide = 0;
 
+    cp8_emu_lock();
+
     for (h = 0; h < sn; h++) {
         if (cp8_vidplotpixel(x, cy, sprite[h])) {
             collide = 1;
         }
         cy++;
     }
+
+    cp8_emu_unlock();
 
     return collide;
 }
@@ -155,36 +166,39 @@ void cp8_vidset_bcolor(const int color) {
     g_cp8_vid_bcolor = color;
 }
 
-void cp8_vidblitchar(const int x, const int y, const cp8_blitchar_pxmap_t pxmap, const int tcolor, const int bcolor) {
-    int cw, ch;
-
-    if (pxmap == NULL) {
-        return;
-    }
-
-    for (ch = 0; ch < CP8_BLITCHAR_MH; ch++) {
-        for (cw = 0; cw < CP8_BLITCHAR_MW; cw++) {
-            if ((pxmap[ch][cw] >> 4) == 0xf) {
-                accacia_textbackground(tcolor);
-            } else {
-                accacia_textbackground(bcolor);
-            }
-
-            accacia_gotoxy(x + cw, y + ch); printf(" ");
-
-            if ((pxmap[ch][cw] & 0xf) == 0xf) {
-                accacia_textbackground(tcolor);
-            } else {
-                accacia_textbackground(bcolor);
-            }
-
-            accacia_gotoxy(x + cw + 1, y + ch); printf(" ");
-            accacia_screennormalize();
-        }
-    }
-
-}
-
 #undef cp8_vid_monitor_x
 
 #undef cp8_vid_monitor_y
+
+void cp8_viddrws(const unsigned char x, const unsigned char y, const int color, const unsigned char *sprite, const char unsigned sn) {
+    unsigned char h;
+    unsigned char cy = y;
+
+    cp8_emu_lock();
+
+    for (h = 0; h < sn; h++) {
+        cp8_vidplotpixel_s(x, cy, color, sprite[h]);
+        cy++;
+    }
+
+    cp8_emu_unlock();
+}
+
+static void cp8_vidplotpixel_s(const unsigned char x, const unsigned char y, const int color, const unsigned char pixmap) {
+    int bit;
+    int cx = x, px = 0;
+
+    for (bit = 0; bit < 8; bit++) {
+        px = ((pixmap >> (7 - bit)) & 1);
+
+        accacia_textbackground((px == 1) ? color : g_cp8_vid_bcolor);
+
+        accacia_gotoxy(cx, y); printf(" ");
+
+        accacia_screennormalize();
+
+        cx++;
+    }
+
+    accacia_gotoxy(1, 1);
+}
