@@ -109,9 +109,9 @@ ___let_the_good_times_roll:   // INFO(Rafael): When CPU was singular.... (...)
         if (k == 'r' || k == 'R') {
             cp8_kbdsetkey(CP8_EMU_TSK_EMULATE_KQUIT);
             cp8_emu_finis();
-            usleep(100);
+            usleep(CP8_EMU_TSK_EMULATE_KQUIT);
             memset(&processor, 0, sizeof(processor));
-            cp8_kbdsetkey(CP8_EMU_TSK_EMULATE_KQUIT >> 1);
+            cp8_kbdsetkey('?');
             goto ___let_the_good_times_roll;
         }
     }
