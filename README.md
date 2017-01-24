@@ -30,7 +30,7 @@ on your system you should move to CP-8's ``src`` sub-directory and invoke ``hefe
 watson@BakerStreet221B:~/src/clues/rafael-santiago/src/CP-8# cd src
 watson@BakerStreet221B:~/src/clues/rafael-santiago/src/CP-8/src# hefesto
 (...)
-watson@BakerStreet221B:~/src/clues/rafael-santiago/src/CP-8# _
+watson@BakerStreet221B:~/src/clues/rafael-santiago/src/CP-8/src# _
 ```
 
 After invoking "hefesto" you will get the binary ``cp8`` under ``../bin`` sub-directory.

@@ -171,14 +171,24 @@ int cp8_emu_tsk_umount(void) {
         }
     }
 
-    fread(&instr, 1, sizeof(instr), fp);
+    instr = ((unsigned short) fgetc(fp) << 8) | fgetc(fp);
+
+    if ((instr >> 12) == 0x1) {
+        // INFO(Rafael): Commonly the programmers used to add some copyright info at the beginning of the ROM.
+        //               This jump here was used to prevent an execution of this data as code.
+        //
+        //               As you can see... we are skipping this dead code.
+
+        fseek(fp, ftell(fp) + ((instr & 0x0fff) - CP8_TEXT_START), SEEK_SET);
+        instr = ((unsigned short) fgetc(fp) << 8) | fgetc(fp);
+    }
 
     while (!feof(fp)) {
         mne = cp8_asm_umount(instr);
         if (mne != NULL) {
             fprintf(op, "%s\n", mne);
         }
-        fread(&instr, 1, sizeof(instr), fp);
+        instr = ((unsigned short) fgetc(fp) << 8) | fgetc(fp);
     }
 
     fclose(fp);
