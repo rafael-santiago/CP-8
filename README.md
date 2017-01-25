@@ -62,7 +62,8 @@ Until now I only have implemented the ``emulate`` task. Pretty obvious, you will
 the following way:
 
 ```
-sherlock@BakerStreet221B:~/src/clues/rafael-santiago/src/CP-8/src# ../bin/cp8 emulate --rom=/home/sherlock/rom/PUZZLE
+sherlock@BakerStreet221B:~/src/clues/rafael-santiago/src/CP-8/src# ../bin/cp8 emulate \
+> --rom=/home/sherlock/rom/PUZZLE
 ```
 
 This emulation task does not remap any key.
