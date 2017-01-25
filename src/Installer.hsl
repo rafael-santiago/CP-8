@@ -1,0 +1,109 @@
+#
+#                          Copyright (C) 2016, 2017 by Rafael Santiago
+#
+# This is a free software. You can redistribute it and/or modify under
+# the terms of the GNU General Public License version 2.
+#
+#
+
+include ~/fsutil.hsl
+
+function installer() : result type none {
+    var option type list;
+
+    $option = hefesto.sys.get_option("install");
+    if ($option.count() > 0) {
+        hefesto.project.abort(install());
+    }
+
+    $option = hefesto.sys.get_option("uninstall");
+    if ($option.count() > 0) {
+        hefesto.project.abort(uninstall());
+    }
+}
+
+local function install() : result type int {
+    var opt type string;
+    var choices type list;
+
+    $opt = "?";
+    $choices.add_item("Y");
+    $choices.add_item("y");
+    $choices.add_item("N");
+    $choices.add_item("n");
+
+    while ($choices.index_of($opt) == -1) {
+        $opt = hefesto.sys.prompt("QUESTION: do you want to install CP-8? [y/n] ");
+    }
+
+    if ($opt == "N" || $opt == "n") {
+        hefesto.sys.echo("INFO: canceled.\n");
+        result 1;
+    }
+    var src type list;
+
+    $src.add_item("../bin/cp8");
+    $src.add_item("../doc/man/cp8.1");
+
+    var dst type list;
+
+    $dst.add_item("/usr/local/bin/cp8");
+    $dst.add_item("/usr/local/man/man1/cp8.1");
+
+    var f type int;
+    $f = 0;
+
+    while ($f < $src.count()) {
+        var filepath type string;
+        $filepath = $dst.item($f);
+
+        mktree(pathfromfilepath($filepath));
+
+        if (hefesto.sys.cp($src.item($f), $filepath) != 1) {
+            hefesto.sys.echo("ERROR: during file copy to " + $filepath + "...\n");
+            result 1;
+        }
+        $f = $f + 1;
+    }
+
+    hefesto.sys.echo("INFO: Done.\n");
+
+    result 0;
+}
+
+local function uninstall() : result type int {
+    var opt type string;
+    var choices type list;
+
+    $opt = "?";
+    $choices.add_item("Y");
+    $choices.add_item("y");
+    $choices.add_item("N");
+    $choices.add_item("n");
+
+    while ($choices.index_of($opt) == -1) {
+        $opt = hefesto.sys.prompt("QUESTION: do you want to uninstall CP-8? [y/n] ");
+    }
+
+    if ($opt == "N" || $opt == "n") {
+        hefesto.sys.echo("INFO: canceled.\n");
+        result 1;
+    }
+
+    var burn_babe type list;
+    $burn_babe.add_item("/usr/local/bin/cp8");
+    $burn_babe.add_item("/usr/local/man/man1/cp8.1");
+
+    var b type int;
+    $b = 0;
+    while ($b < $burn_babe.count()) {
+        if (hefesto.sys.rm($burn_babe.item($b)) != 0) {
+            hefesto.sys.echo("WARN: while removing " + $burn_babe.item($b) + "...\n");
+        }
+        $b = $b + 1;
+    }
+
+    hefesto.sys.echo("INFO: Done.\n");
+
+    result 0;
+}

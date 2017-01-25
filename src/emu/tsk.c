@@ -93,7 +93,7 @@ ___let_the_good_times_roll:   // INFO(Rafael): When CPU was singular.... (...)
             cp8_kbdread();
             instr = cp8_emu_next_instr(processor.pc);
             cp8_kbdread();
-            usleep(CP8_CLOCK_IN_MICORSECS);
+            usleep(CP8_CLOCK_IN_MICRORSECS);
         }
 
         cp8_kbdrelease();

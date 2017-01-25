@@ -35,11 +35,23 @@ watson@BakerStreet221B:~/src/clues/rafael-santiago/src/CP-8/src# _
 
 After invoking "hefesto" you will get the binary ``cp8`` under ``../bin`` sub-directory.
 
-## How to install it?
+## How to install/uninstall it?
 
-((( Coming soon... I have not written any installation script yet. )))
+Firstly all should be done under ``src`` sub-directory, them...
 
-;-P
+### Install
+
+```
+watson@BakerStreet221B:~/src/clues/rafael-santiago/src/CP-8/src# hefesto --install
+```
+
+### Uninstall
+
+```
+watson@BakerStreet221B:~/src/clues/rafael-santiago/src/CP-8/src# hefesto --uninstall
+```
+
+Answer the questions confirming your choice and you will get this software installed on your environment.
 
 ## How to use it?
 

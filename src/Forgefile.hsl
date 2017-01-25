@@ -8,6 +8,7 @@
 
 include ~/toolsets/gcc/gcc-app.hsl
 include Utils.hsl
+include Installer.hsl
 
 local var sources type list;
 local var additional_includes type list;
@@ -28,6 +29,8 @@ project CP-8 : toolset "gcc-c-app" : dependencies $dependency_chain : $sources,
 
 
 CP-8.prologue() {
+    installer();
+
     $sources = get_codes($sources, $dependency_chain);
     $additional_includes.add_item(hefesto.sys.pwd());
     $additional_includes.add_item(hefesto.sys.make_path(hefesto.sys.pwd(), "lib/acc/src"));

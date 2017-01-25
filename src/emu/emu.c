@@ -120,8 +120,8 @@ void cp8_emu_unlock(void) {
 #endif
 
 static int cp8_help(void) {
-    printf("usage: cp8 emulate <options>\n\n"
-           "cp8 is Copyright (C) 2017 by Rafael Santiago.\n\n"
+    printf("usage: cp8 emulate | umount <options>\n\n"
+           "cp8 is Copyright (C) 2016-2017 by Rafael Santiago.\n\n"
            "Bug reports, feedback, etc: <voidbrainvoid@gmail.com> "
            "or <https://github.com/rafael-santiago/CP-8/issues>\n");
     return 0;
