@@ -37,7 +37,7 @@ After invoking "hefesto" you will get the binary ``cp8`` under ``../bin`` sub-di
 
 ## How to install/uninstall it?
 
-Firstly all should be done under ``src`` sub-directory, them...
+Firstly all should be done under ``src`` sub-directory and then...
 
 ### Install
 
