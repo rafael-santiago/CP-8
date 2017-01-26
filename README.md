@@ -80,6 +80,8 @@ sherlock@BakerStreet221B:~/src/clues/rafael-santiago/src/CP-8/src# ../bin/cp8 em
 
 This emulation task does not re-map any key. However, you have some special keys, look the **Table 1**.
 
+**Table 1**: Special keys recognized during an emulation task.
+
 |     **Key**         |              **Action**              |
 |:-------------------:|:------------------------------------:|
 |      ``R``          |  Reset/Restart the ``ROM`` execution |
