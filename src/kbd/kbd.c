@@ -7,6 +7,7 @@
  */
 
 #include <kbd/kbd.h>
+#include <ctx/types.h>
 #include <vid/vid.h>
 #include <accacia.h>
 #include <ctype.h>
@@ -121,11 +122,6 @@ static unsigned char g_kbd_kf[] = {
 // WARN(Rafael): Boring code and kind of stupid do not waste your time reading it..
 
 static void cp8_kbdkdraw(const unsigned char key, int kcolor);
-
-struct cp8_kbd_key_ctx {
-    cp8_blitchar_pxmap_t *key;
-    const int x, y;
-};
 
 static unsigned char kval(const unsigned char k) {
     unsigned char v = toupper(k);
@@ -390,7 +386,7 @@ void cp8_kbdinit(void) {
 #ifndef NO_PTHREAD_SUPPORT
 
 static void *cp8_kbdloop(void *args) {
-    while (g_kbd_lkey != 27) {
+    while (g_kbd_lkey != CP8_EMU_TSK_EMULATE_KQUIT) {
         cp8_kbdread();
         usleep(100);
         pthread_mutex_lock(&g_cp8_kpad_mtx);

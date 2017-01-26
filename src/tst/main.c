@@ -741,9 +741,9 @@ CUTE_TEST_CASE_SUITE_END
 
 // --
 
-// MACROS
+// DSL
 
-CUTE_TEST_CASE(cp8_macros_suite)
+CUTE_TEST_CASE(cp8_dsl_suite)
     struct cp8_ctx cp8;
     unsigned short instr = 0xd128;
 
@@ -1381,14 +1381,14 @@ CUTE_TEST_CASE_SUITE_END
 // --
 
 CUTE_TEST_CASE(cp8_tests)
-    CUTE_RUN_TEST_SUITE(cp8_macros_suite);
+    CUTE_RUN_TEST_SUITE(cp8_dsl_suite);
     CUTE_RUN_TEST_SUITE(cp8_ctx_suite);
     CUTE_RUN_TEST_SUITE(cp8_mem_suite);
     CUTE_RUN_TEST_SUITE(cp8_vid_suite);
     CUTE_RUN_TEST_SUITE(cp8_cpu_suite);
     CUTE_RUN_TEST_SUITE(cp8_rom_suite);
-    CUTE_RUN_TEST_SUITE(cp8_emu_opt_suite);
     CUTE_RUN_TEST_SUITE(cp8_asm_suite);
+    CUTE_RUN_TEST_SUITE(cp8_emu_opt_suite);
 CUTE_TEST_CASE_END
 
 CUTE_MAIN(cp8_tests);
