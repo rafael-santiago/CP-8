@@ -13,10 +13,11 @@ watson@BakerStreet221B:~/src/clues/rafael-santiago# cd CP-8
 watson@BakerStreet221B:~/src/clues/rafael-santiago/CP-8# git submodule update --init
 ```
 
-If the above incantations are trickier for you, try:
+If the incantations above are trickier for you, try:
 
 ```
-watson@BakerStreet221B:~/src/clues/rafael-santiago# git clone https://github.com/rafael-santiago/CP-8 --recursive
+watson@BakerStreet221B:~/src/clues/rafael-santiago# git clone \
+> https://github.com/rafael-santiago/CP-8 --recursive
 ```
 
 Done.

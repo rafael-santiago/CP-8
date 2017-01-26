@@ -29,7 +29,7 @@ int cp8_emu_tsk_emulate(void) {
     unsigned short instr;
     struct cp8_ctx processor;
     unsigned char k = CP8_EMU_TSK_EMULATE_KQUIT >> 1;
-    int cycles, cycles_nr;
+    int cycles, cycles_nr, paused;
 #ifndef NO_PTHREAD_SUPPORT
     pthread_t processor_tmu;
     pthread_attr_t processor_tmu_attr;
@@ -51,6 +51,8 @@ int cp8_emu_tsk_emulate(void) {
 
 ___let_the_good_times_roll:   // INFO(Rafael): When CPU was singular.... (...)
 
+    paused = 0;
+
 #ifndef NO_PTHREAD_SUPPORT
     pthread_create(&processor_tmu, &processor_tmu_attr, cp8_tmrtck, &processor);
 #endif
@@ -63,6 +65,23 @@ ___let_the_good_times_roll:   // INFO(Rafael): When CPU was singular.... (...)
     instr = cp8_emu_next_instr(processor.pc);
 
     while ((k = toupper(cp8_kbdlkey())) != CP8_EMU_TSK_EMULATE_KQUIT) {
+
+        if (k == 'r' || k == 'R') {
+            cp8_kbdsetkey(CP8_EMU_TSK_EMULATE_KQUIT);
+            cp8_emu_finis();
+            usleep(CP8_EMU_TSK_EMULATE_KQUIT);
+            memset(&processor, 0, sizeof(processor));
+            cp8_kbdsetkey('?');
+            goto ___let_the_good_times_roll;
+        } else if (k == 'p' || k == 'P') {
+            paused = !paused;
+            cp8_kbdsetkey('?');
+        }
+
+        if (paused) {
+            usleep(5);
+            continue;
+        }
 
         // INFO(Rafael): To execute the instructions per cycles was the way that I found to reduce the flickering a little.
         //               However, a CHIP-8 game normally can flicker and still all here is done over an ANSI/TERM.
@@ -107,14 +126,7 @@ ___let_the_good_times_roll:   // INFO(Rafael): When CPU was singular.... (...)
         }
 
 #endif
-        if (k == 'r' || k == 'R') {
-            cp8_kbdsetkey(CP8_EMU_TSK_EMULATE_KQUIT);
-            cp8_emu_finis();
-            usleep(CP8_EMU_TSK_EMULATE_KQUIT);
-            memset(&processor, 0, sizeof(processor));
-            cp8_kbdsetkey('?');
-            goto ___let_the_good_times_roll;
-        }
+
     }
 
 #undef cp8_emu_next_instr
