@@ -1,3 +1,11 @@
+/*
+ *                          Copyright (C) 2016, 2017 by Rafael Santiago
+ *
+ * This is a free software. You can redistribute it and/or modify under
+ * the terms of the GNU General Public License version 2.
+ *
+ */
+
 #include <asm/umount.h>
 #include <asm/dtp/dtp0.h>
 #include <asm/dtp/dtp1.h>
