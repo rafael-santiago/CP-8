@@ -38,6 +38,12 @@ local function install() : result type int {
         result 1;
     }
 
+    if (isfile("../bin/cp8") == 0) {
+        if (hefesto.sys.run("hefesto") != 0) {
+            hefesto.project.abort(1);
+        }
+    }
+
     var src type list;
 
     $src.add_item("../bin/cp8");
