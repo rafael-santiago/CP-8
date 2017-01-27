@@ -5,9 +5,8 @@ the screen output.
 
 Well, here follows some ``CHIP-8 ROMs`` emulated with this software:
 
-|                |                  |                  |
-|:--------------:|:----------------:|:----------------:|
 |  **INVADERS**  |    **TIC-TAC**   |   **WIPE-OFF**   |
+|:--------------:|:----------------:|:----------------:|
 |![INVADERS](https://github.com/rafael-santiago/CP-8/blob/master/etc/invaders.jpeg)|![TIC-TAC](https://github.com/rafael-santiago/CP-8/blob/master/etc/tictac.jpeg)|![WIPE-OFF](https://github.com/rafael-santiago/CP-8/blob/master/etc/wipeoff.jpeg)|
 |   **MERLIN**   |      **UFO**     |     **TANK**     |
 |![MERLIN](https://github.com/rafael-santiago/CP-8/blob/master/etc/merlin.jpeg)|![UFO](https://github.com/rafael-santiago/CP-8/blob/master/etc/ufo.jpeg)|![TANK](https://github.com/rafael-santiago/CP-8/blob/master/etc/tank.jpeg)|
@@ -70,8 +69,7 @@ Answer the questions confirming your choice and you will get this software insta
 This application works based on tasks. So you need to inform the ``task`` and its ``--arguments=(...)``. Each task
 requires its own specific arguments.
 
-Until now I only have implemented the ``emulate`` task. Pretty obvious, you will use it to play the ``CHIP-8`` games on
-the following way:
+The ``emulate`` task is pretty obvious, you will use it to play the ``CHIP-8`` games on the following way:
 
 ```
 sherlock@BakerStreet221B:~/src/clues/rafael-santiago/src/CP-8/src# ../bin/cp8 emulate \

@@ -49,7 +49,7 @@ int cp8_emu_tsk_emulate(void) {
 
     cycles_nr = cp8_emu_get_cycles();
 
-___let_the_good_times_roll:   // INFO(Rafael): When CPU was singular.... (...)
+___let_the_good_times_roll:   // INFO(Rafael): "When CPU was singular".
 
     paused = 0;
 
