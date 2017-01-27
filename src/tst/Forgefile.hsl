@@ -68,6 +68,8 @@ local function runtests() : result type none {
     if ($exit_code != 0) {
         hefesto.sys.echo("~~~ THE TESTS HAVE ERROR(s)\n");
         hefesto.project.abort($exit_code);
+    } else {
+        hefesto.sys.echo("INFO: This code seems to be okay, in order to install it you can run \"hefesto --install\".\n");
     }
 }
 
