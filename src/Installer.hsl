@@ -26,20 +26,18 @@ local function install() : result type int {
     var opt type string;
     var choices type list;
 
-    $opt = "?";
     $choices.add_item("Y");
     $choices.add_item("y");
     $choices.add_item("N");
     $choices.add_item("n");
 
-    while ($choices.index_of($opt) == -1) {
-        $opt = hefesto.sys.prompt("QUESTION: do you want to install CP-8? [y/n] ");
-    }
+    $opt = question("QUESTION: do you want to install CP-8? [y/n] ", $choices);
 
     if ($opt == "N" || $opt == "n") {
         hefesto.sys.echo("INFO: canceled.\n");
         result 1;
     }
+
     var src type list;
 
     $src.add_item("../bin/cp8");
@@ -75,15 +73,12 @@ local function uninstall() : result type int {
     var opt type string;
     var choices type list;
 
-    $opt = "?";
     $choices.add_item("Y");
     $choices.add_item("y");
     $choices.add_item("N");
     $choices.add_item("n");
 
-    while ($choices.index_of($opt) == -1) {
-        $opt = hefesto.sys.prompt("QUESTION: do you want to uninstall CP-8? [y/n] ");
-    }
+    $opt = question("do you want to uninstall CP-8? [y/n] ", $choices);
 
     if ($opt == "N" || $opt == "n") {
         hefesto.sys.echo("INFO: canceled.\n");
@@ -106,4 +101,16 @@ local function uninstall() : result type int {
     hefesto.sys.echo("INFO: Done.\n");
 
     result 0;
+}
+
+local function question(query type string, choices type list) : result type string {
+    var opt type string;
+
+    $opt = "?";
+
+    while ($choices.index_of($opt) == -1) {
+        $opt = hefesto.sys.prompt("QUESTION: " + $query);
+    }
+
+    result $opt;
 }
