@@ -18,9 +18,11 @@ Well, here follows some ``CHIP-8 ROMs`` emulated with this software:
 Well, I use some ``git-submodules`` here so:
 
 ```
-watson@BakerStreet221B:~/src/clues/rafael-santiago# git clone https://github.com/rafael-santiago/CP-8
+watson@BakerStreet221B:~/src/clues/rafael-santiago# git clone \
+> https://github.com/rafael-santiago/CP-8
 watson@BakerStreet221B:~/src/clues/rafael-santiago# cd CP-8
-watson@BakerStreet221B:~/src/clues/rafael-santiago/CP-8# git submodule update --init
+watson@BakerStreet221B:~/src/clues/rafael-santiago/CP-8# git \
+> submodule update --init
 ```
 
 If the incantations above are trickier for you, try:
